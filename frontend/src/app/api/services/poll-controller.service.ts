@@ -9,8 +9,8 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
-import { index1 } from '../fn/poll-controller/index-1';
-import { Index1$Params } from '../fn/poll-controller/index-1';
+import { pollIndex } from '../fn/poll-controller/poll-index';
+import { PollIndex$Params } from '../fn/poll-controller/poll-index';
 
 @Injectable({ providedIn: 'root' })
 export class PollControllerService extends BaseService {
@@ -18,27 +18,27 @@ export class PollControllerService extends BaseService {
     super(config, http);
   }
 
-  /** Path part for operation `index1()` */
-  static readonly Index1Path = '/poll/';
+  /** Path part for operation `pollIndex()` */
+  static readonly PollIndexPath = '/poll/';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `index1()` instead.
+   * To access only the response body, use `pollIndex()` instead.
    *
    * This method doesn't expect any request body.
    */
-  index1$Response(params?: Index1$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
-    return index1(this.http, this.rootUrl, params, context);
+  pollIndex$Response(params?: PollIndex$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
+    return pollIndex(this.http, this.rootUrl, params, context);
   }
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `index1$Response()` instead.
+   * To access the full response (for headers, for example), `pollIndex$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  index1(params?: Index1$Params, context?: HttpContext): Observable<string> {
-    return this.index1$Response(params, context).pipe(
+  pollIndex(params?: PollIndex$Params, context?: HttpContext): Observable<string> {
+    return this.pollIndex$Response(params, context).pipe(
       map((r: StrictHttpResponse<string>): string => r.body)
     );
   }

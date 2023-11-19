@@ -9,8 +9,8 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
-import { index } from '../fn/vote-controller/index';
-import { Index$Params } from '../fn/vote-controller/index';
+import { voteIndex } from '../fn/vote-controller/vote-index';
+import { VoteIndex$Params } from '../fn/vote-controller/vote-index';
 
 @Injectable({ providedIn: 'root' })
 export class VoteControllerService extends BaseService {
@@ -18,8 +18,8 @@ export class VoteControllerService extends BaseService {
     super(config, http);
   }
 
-  /** Path part for operation `index()` */
-  static readonly IndexPath = '/vote/';
+  /** Path part for operation `voteIndex()` */
+  static readonly VoteIndexPath = '/vote/';
 
   /**
    * Returns the string "Vote".
@@ -27,12 +27,12 @@ export class VoteControllerService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `index()` instead.
+   * To access only the response body, use `voteIndex()` instead.
    *
    * This method doesn't expect any request body.
    */
-  index$Response(params?: Index$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
-    return index(this.http, this.rootUrl, params, context);
+  voteIndex$Response(params?: VoteIndex$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
+    return voteIndex(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -41,12 +41,12 @@ export class VoteControllerService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `index$Response()` instead.
+   * To access the full response (for headers, for example), `voteIndex$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  index(params?: Index$Params, context?: HttpContext): Observable<string> {
-    return this.index$Response(params, context).pipe(
+  voteIndex(params?: VoteIndex$Params, context?: HttpContext): Observable<string> {
+    return this.voteIndex$Response(params, context).pipe(
       map((r: StrictHttpResponse<string>): string => r.body)
     );
   }

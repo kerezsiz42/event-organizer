@@ -7,11 +7,11 @@ import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
 
-export interface Index1$Params {
+export interface VoteIndex$Params {
 }
 
-export function index1(http: HttpClient, rootUrl: string, params?: Index1$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
-  const rb = new RequestBuilder(rootUrl, index1.PATH, 'get');
+export function voteIndex(http: HttpClient, rootUrl: string, params?: VoteIndex$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
+  const rb = new RequestBuilder(rootUrl, voteIndex.PATH, 'get');
   if (params) {
   }
 
@@ -25,4 +25,4 @@ export function index1(http: HttpClient, rootUrl: string, params?: Index1$Params
   );
 }
 
-index1.PATH = '/poll/';
+voteIndex.PATH = '/vote/';

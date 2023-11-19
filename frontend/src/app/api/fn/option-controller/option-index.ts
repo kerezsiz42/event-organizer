@@ -7,16 +7,16 @@ import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
 
-export interface Index2$Params {
+export interface OptionIndex$Params {
 }
 
-export function index2(http: HttpClient, rootUrl: string, params?: Index2$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
-  const rb = new RequestBuilder(rootUrl, index2.PATH, 'get');
+export function optionIndex(http: HttpClient, rootUrl: string, params?: OptionIndex$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
+  const rb = new RequestBuilder(rootUrl, optionIndex.PATH, 'get');
   if (params) {
   }
 
   return http.request(
-    rb.build({ responseType: 'blob', accept: '*/*', context })
+    rb.build({ responseType: 'json', accept: 'application/json', context })
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
@@ -25,4 +25,4 @@ export function index2(http: HttpClient, rootUrl: string, params?: Index2$Params
   );
 }
 
-index2.PATH = '/option/';
+optionIndex.PATH = '/option/';
