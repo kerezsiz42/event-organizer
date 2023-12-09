@@ -12,6 +12,6 @@ RUN ./mvnw package -DskipTests
 
 FROM amazoncorretto:21-alpine3.18
 WORKDIR /app
-COPY --from=build /app/target/szisz-event-organizer.jar /app/szisz-event-organizer.jar
+COPY --from=build /app/target/event-organizer.jar /app/event-organizer.jar
 COPY application.properties /app/application.properties
-CMD ["java", "-jar", "szisz-event-organizer.jar"]
+CMD ["java", "-jar", "event-organizer.jar"]

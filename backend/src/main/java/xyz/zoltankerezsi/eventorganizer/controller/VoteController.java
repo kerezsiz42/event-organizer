@@ -1,4 +1,4 @@
-package xyz.zoltankerezsi.sziszeventorganizer.controller;
+package xyz.zoltankerezsi.eventorganizer.controller;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,11 +9,11 @@ import io.swagger.v3.oas.annotations.Operation;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/vote")
+@RequestMapping(path = "/votes", produces = "application/json")
 class VoteController {
     @GetMapping("/")
     @Operation(summary = "Returns the string \"Vote\"")
-    String voteIndex() {
+    String getVotes() {
         return "Vote";
     }
 }

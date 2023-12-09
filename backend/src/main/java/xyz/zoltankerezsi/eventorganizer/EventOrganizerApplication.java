@@ -1,12 +1,12 @@
-package xyz.zoltankerezsi.sziszeventorganizer;
+package xyz.zoltankerezsi.eventorganizer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SziszEventOrganizerApplication {
+public class EventOrganizerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SziszEventOrganizerApplication.class, args);
+		SpringApplication.run(EventOrganizerApplication.class, args);
 	}
 }

@@ -1,0 +1,27 @@
+polls:
+  - title: Hétvégi mozizás
+    description: A megbeszéltek alapján szombaton 17:00 után érne rá mindenki. Ki kellene választani, hogy mit nézzünk.
+    multipleChoice: false
+    options:
+      - title: Napóleon 2D feliratos
+        description: "Időpont: 17:15"
+        price: 2900
+      - title: Aquaman és az Elveszett Királyság 2D feliratos
+        description: "Időpont: 17:30"
+        price: 2800
+      - title: Aquaman és az Elveszett Királyság VIP 3D
+        description: "Időpont: 18:00"
+        price: 3200
+  - title: Pizzázás
+    description: Válasszatok pizzát!
+    multipleChoice: true
+    options:
+      - title: Magyaros
+        description: (paradicsomszósz, szalámi, bacon, hagyma, pepperoni, mozzarella)
+        price: 3100
+      - title: Bivaly
+        description: (csípős-paradicsomszósz, kolbász, zöldpaprika, jalapeno, mozzarella)
+        price: 3500
+      - title: Négysajtos
+        description: (paradicsomszósz, márványsajt, parmesan, cheddar, mozzarella)
+        price: 3400

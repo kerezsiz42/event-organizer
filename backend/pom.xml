@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>xyz.zoltankerezsi</groupId>
-	<artifactId>szisz-event-organizer</artifactId>
+	<artifactId>event-organizer</artifactId>
 	<version>0.1.0</version>
-	<name>szisz-event-organizer</name>
-	<description>Event organizer and payment tracking system for Szisz</description>
+	<name>event-organizer</name>
+	<description>Event organizer and payment tracking system</description>
 	<properties>
 		<java.version>21</java.version>
 	</properties>
@@ -25,7 +25,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
@@ -49,7 +48,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>szisz-event-organizer</finalName>
+		<finalName>event-organizer</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

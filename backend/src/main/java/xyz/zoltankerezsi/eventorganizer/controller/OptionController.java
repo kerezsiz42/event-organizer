@@ -1,4 +1,4 @@
-package xyz.zoltankerezsi.sziszeventorganizer.controller;
+package xyz.zoltankerezsi.eventorganizer.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping(path = "/option", produces = "application/json")
+@RequestMapping(path = "/options", produces = "application/json")
 class OptionController {
     @GetMapping("/")
-    ResponseEntity<String> optionIndex() {
+    ResponseEntity<String> getOptions() {
         return ResponseEntity.ok("\"Option\"");
     }
 }
