@@ -1,16 +1,12 @@
 package xyz.zoltankerezsi.eventorganizer.model;
 
-import java.time.LocalDateTime;
-import java.util.Set;
-import java.util.UUID;
+import java.util.List;
 
-import org.hibernate.annotations.CreationTimestamp;
-
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Table;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -28,13 +24,8 @@ import lombok.Setter;
 @Table(name = "option")
 public class Option {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "option_id")
-    private UUID optionId;
-
-    @CreationTimestamp
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private String optionId;
 
     @Column(name = "title")
     private String title;
@@ -45,10 +36,10 @@ public class Option {
     @Column(name = "price")
     private Long price;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "poll_id", nullable = false)
     private Poll poll;
 
-    @OneToMany(mappedBy = "vote")
-    private Set<Vote> votes;
+    @OneToMany(mappedBy = "vote", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Vote> votes;
 }
