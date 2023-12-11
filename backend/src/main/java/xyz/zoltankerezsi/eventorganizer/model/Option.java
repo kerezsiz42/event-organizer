@@ -40,6 +40,6 @@ public class Option {
     @JoinColumn(name = "poll_id", nullable = false)
     private Poll poll;
 
-    @OneToMany(mappedBy = "vote", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "option", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vote> votes;
 }

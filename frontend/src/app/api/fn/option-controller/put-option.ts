@@ -7,16 +7,16 @@ import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
 
-export interface PollIndex$Params {
+export interface PutOption$Params {
 }
 
-export function pollIndex(http: HttpClient, rootUrl: string, params?: PollIndex$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
-  const rb = new RequestBuilder(rootUrl, pollIndex.PATH, 'get');
+export function putOption(http: HttpClient, rootUrl: string, params?: PutOption$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
+  const rb = new RequestBuilder(rootUrl, putOption.PATH, 'put');
   if (params) {
   }
 
   return http.request(
-    rb.build({ responseType: 'blob', accept: '*/*', context })
+    rb.build({ responseType: 'json', accept: 'application/json', context })
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
@@ -25,4 +25,4 @@ export function pollIndex(http: HttpClient, rootUrl: string, params?: PollIndex$
   );
 }
 
-pollIndex.PATH = '/poll/';
+putOption.PATH = '/options/';

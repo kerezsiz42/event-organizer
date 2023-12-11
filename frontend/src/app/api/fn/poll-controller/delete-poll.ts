@@ -7,16 +7,18 @@ import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
 
-export interface VoteIndex$Params {
+export interface DeletePoll$Params {
+  id: string;
 }
 
-export function voteIndex(http: HttpClient, rootUrl: string, params?: VoteIndex$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
-  const rb = new RequestBuilder(rootUrl, voteIndex.PATH, 'get');
+export function deletePoll(http: HttpClient, rootUrl: string, params: DeletePoll$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
+  const rb = new RequestBuilder(rootUrl, deletePoll.PATH, 'delete');
   if (params) {
+    rb.path('id', params.id, {});
   }
 
   return http.request(
-    rb.build({ responseType: 'blob', accept: '*/*', context })
+    rb.build({ responseType: 'json', accept: 'application/json', context })
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
@@ -25,4 +27,4 @@ export function voteIndex(http: HttpClient, rootUrl: string, params?: VoteIndex$
   );
 }
 
-voteIndex.PATH = '/vote/';
+deletePoll.PATH = '/polls/{id}';

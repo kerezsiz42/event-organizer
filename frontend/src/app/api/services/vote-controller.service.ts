@@ -9,8 +9,12 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
-import { voteIndex } from '../fn/vote-controller/vote-index';
-import { VoteIndex$Params } from '../fn/vote-controller/vote-index';
+import { deleteVote } from '../fn/vote-controller/delete-vote';
+import { DeleteVote$Params } from '../fn/vote-controller/delete-vote';
+import { getVote } from '../fn/vote-controller/get-vote';
+import { GetVote$Params } from '../fn/vote-controller/get-vote';
+import { putVote } from '../fn/vote-controller/put-vote';
+import { PutVote$Params } from '../fn/vote-controller/put-vote';
 
 @Injectable({ providedIn: 'root' })
 export class VoteControllerService extends BaseService {
@@ -18,35 +22,77 @@ export class VoteControllerService extends BaseService {
     super(config, http);
   }
 
-  /** Path part for operation `voteIndex()` */
-  static readonly VoteIndexPath = '/vote/';
+  /** Path part for operation `putVote()` */
+  static readonly PutVotePath = '/votes/';
 
   /**
-   * Returns the string "Vote".
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `voteIndex()` instead.
+   * To access only the response body, use `putVote()` instead.
    *
    * This method doesn't expect any request body.
    */
-  voteIndex$Response(params?: VoteIndex$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
-    return voteIndex(this.http, this.rootUrl, params, context);
+  putVote$Response(params?: PutVote$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
+    return putVote(this.http, this.rootUrl, params, context);
   }
 
   /**
-   * Returns the string "Vote".
-   *
-   *
-   *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `voteIndex$Response()` instead.
+   * To access the full response (for headers, for example), `putVote$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  voteIndex(params?: VoteIndex$Params, context?: HttpContext): Observable<string> {
-    return this.voteIndex$Response(params, context).pipe(
+  putVote(params?: PutVote$Params, context?: HttpContext): Observable<string> {
+    return this.putVote$Response(params, context).pipe(
+      map((r: StrictHttpResponse<string>): string => r.body)
+    );
+  }
+
+  /** Path part for operation `getVote()` */
+  static readonly GetVotePath = '/votes/{id}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `getVote()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getVote$Response(params?: GetVote$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
+    return getVote(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `getVote$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getVote(params?: GetVote$Params, context?: HttpContext): Observable<string> {
+    return this.getVote$Response(params, context).pipe(
+      map((r: StrictHttpResponse<string>): string => r.body)
+    );
+  }
+
+  /** Path part for operation `deleteVote()` */
+  static readonly DeleteVotePath = '/votes/{id}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `deleteVote()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  deleteVote$Response(params?: DeleteVote$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
+    return deleteVote(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `deleteVote$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  deleteVote(params?: DeleteVote$Params, context?: HttpContext): Observable<string> {
+    return this.deleteVote$Response(params, context).pipe(
       map((r: StrictHttpResponse<string>): string => r.body)
     );
   }

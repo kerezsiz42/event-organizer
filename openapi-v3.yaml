@@ -6,41 +6,282 @@ servers:
 - url: http://localhost:8080
   description: Generated server url
 paths:
-  /vote/:
-    get:
+  /votes/:
+    put:
       tags:
       - vote-controller
-      summary: Returns the string "Vote"
-      operationId: voteIndex
+      operationId: putVote
       responses:
-        "200":
-          description: OK
+        "400":
+          description: Bad Request
           content:
             '*/*':
               schema:
-                type: string
-  /poll/:
-    get:
-      tags:
-      - poll-controller
-      operationId: pollIndex
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                type: string
-  /option/:
-    get:
-      tags:
-      - option-controller
-      operationId: optionIndex
-      responses:
+                type: object
+                additionalProperties:
+                  type: string
         "200":
           description: OK
           content:
             application/json:
               schema:
                 type: string
-components: {}
+  /polls/:
+    get:
+      tags:
+      - poll-controller
+      summary: Get all poll objects
+      operationId: getPolls
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "200":
+          description: "Retrieve all poll objects from database, does not throw exceptions.\
+            \ In case the database is empty, returns an empty array"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PollOutput'
+    put:
+      tags:
+      - poll-controller
+      summary: Update or insert a poll object into database
+      operationId: putPoll
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PollInput'
+        required: true
+      responses:
+        "400":
+          description: Takes into action when any field of the poll object to be updated/inserted
+            is invalid
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: "Parse and validate poll object data, then update a poll object\
+            \ with the same id if it exists, or insert a new one"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PollOutput'
+  /options/:
+    put:
+      tags:
+      - option-controller
+      operationId: putOption
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+  /votes/{id}:
+    get:
+      tags:
+      - vote-controller
+      operationId: getVote
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+    delete:
+      tags:
+      - vote-controller
+      operationId: deleteVote
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+  /polls/{id}:
+    get:
+      tags:
+      - poll-controller
+      summary: Get a single poll object by its id
+      operationId: getPoll
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+          type: string
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "404":
+          description: Poll object not found
+          content:
+            application/json:
+              schema:
+                type: string
+        "200":
+          description: Retrieve a poll object from database if it exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PollOutput'
+    delete:
+      tags:
+      - poll-controller
+      summary: Delete a poll object by its id
+      operationId: deletePoll
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+          type: string
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "200":
+          description: "Delete a poll object from database by id, or return successfully\
+            \ if it does not exist"
+          content:
+            application/json:
+              schema:
+                type: string
+  /options/{id}:
+    get:
+      tags:
+      - option-controller
+      operationId: getOption
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+    delete:
+      tags:
+      - option-controller
+      operationId: deleteOption
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+components:
+  schemas:
+    PollInput:
+      required:
+      - description
+      - multipleChoice
+      - options
+      - title
+      - votes
+      type: object
+      properties:
+        pollId:
+          pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        multipleChoice:
+          type: boolean
+        options:
+          type: array
+          items:
+            pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+            type: string
+        votes:
+          type: array
+          items:
+            pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+            type: string
+    PollOutput:
+      type: object
+      properties:
+        pollId:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        multipleChoice:
+          type: boolean
+        options:
+          type: array
+          items:
+            type: string
+        votes:
+          type: array
+          items:
+            type: string

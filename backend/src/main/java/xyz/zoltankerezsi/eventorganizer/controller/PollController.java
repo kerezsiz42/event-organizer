@@ -2,7 +2,7 @@ package xyz.zoltankerezsi.eventorganizer.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 import org.hibernate.mapping.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,8 +22,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.constraints.Pattern;
-import xyz.zoltankerezsi.eventorganizer.Constants;
+import jakarta.validation.Valid;
 import xyz.zoltankerezsi.eventorganizer.dto.PollInput;
 import xyz.zoltankerezsi.eventorganizer.dto.PollOutput;
 import xyz.zoltankerezsi.eventorganizer.model.Option;
@@ -46,59 +45,55 @@ class PollController {
 	@Autowired
 	private VoteRepository voteRepository;
 
-	@Operation(summary = "Get all poll objects")
+	@Operation(summary = "Visszaküldi az összess poll objektumot")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Retrieve all poll objects from database, does not throw exceptions. In case the database is empty, returns an empty array", content = {
+			@ApiResponse(responseCode = "200", description = "Visszaküldi az összess poll objektumot. Nem dob kivételt. Ha az adatbázis üres, akkor egy üres array-el tér vissza.", content = {
 					@Content(array = @ArraySchema(schema = @Schema(implementation = PollOutput.class))) }) })
-	@GetMapping("/")
+	@GetMapping
 	ResponseEntity<List<PollOutput>> getPolls() {
 		List<PollOutput> list = new ArrayList<>();
 		pollRepository.findAll().forEach((poll) -> list.add(PollOutput.fromPoll(poll)));
 		return ResponseEntity.ok(list);
 	}
 
-	@Operation(summary = "Get a single poll object by its id")
+	@Operation(summary = "Lekérdez egy poll objektumot id alapján")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Retrieve a poll object from database if it exists", content = {
+			@ApiResponse(responseCode = "200", description = "Visszaadja a poll objektumot az adatbázisból, ha létezik.", content = {
 					@Content(schema = @Schema(implementation = PollOutput.class)) }),
-			@ApiResponse(responseCode = "404", description = "Poll object not found", content = @Content(schema = @Schema(implementation = String.class))) })
+			@ApiResponse(responseCode = "404", description = "Ha poll objektum nem található.", content = @Content(schema = @Schema(implementation = String.class))) })
 	@GetMapping("/{id}")
-	ResponseEntity<PollOutput> getPoll(
-			@PathVariable(value = "id") @Pattern(regexp = Constants.UUID_REGEX, message = "Invalid UUID format") final String pollId) {
+	ResponseEntity<PollOutput> getPoll(@PathVariable(value = "id") final String pollId) {
 		return pollRepository.findById(pollId)
 				.map(PollOutput::fromPoll)
 				.map(ResponseEntity::ok)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, pollId));
 	}
 
-	@Operation(summary = "Update or insert a poll object into database")
+	@Operation(summary = "Frissít vagy beilleszt egy poll objektumot az adatbázisba")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Parse and validate poll object data, then update a poll object with the same id if it exists, or insert a new one", content = {
+			@ApiResponse(responseCode = "200", description = "Validálja a bejövő poll objektum adatait, majd frissítit a poll objectumot, ha ugyonlyan id-val létezik az adatbázisban, különben beilleszt egy újat.", content = {
 					@Content(schema = @Schema(implementation = PollOutput.class)) }),
-			@ApiResponse(responseCode = "400", description = "Takes into action when any field of the poll object to be updated/inserted is invalid", content = @Content(schema = @Schema(implementation = Map.class))) })
-	@PutMapping("/")
-	ResponseEntity<PollOutput> putPoll(@RequestBody final PollInput input) {
-		Optional<Poll> poll = pollRepository.findById(input.getPollId());
+			@ApiResponse(responseCode = "400", description = "Működésbe lép, ha a poll objectum bármely mezője a validációnak nem megfelelő formátumú. Visszaküldi a hibás mezőket és a hibát egy JSON objektumban.", content = @Content(schema = @Schema(implementation = Map.class))) })
+	@PutMapping
+	ResponseEntity<PollOutput> putPoll(@Valid @RequestBody final PollInput p) {
 		List<Option> options = new ArrayList<>();
-		optionRepository.findAllById(input.getOptions()).forEach(options::add);
+		optionRepository.findAllById(p.getOptions()).forEach(options::add);
 		List<Vote> votes = new ArrayList<>();
-		voteRepository.findAllById(input.getVotes()).forEach(votes::add);
-		Poll p = poll.isEmpty()
-				? new Poll(input.getPollId(), input.getTitle(), input.getDescription(), input.getFinalCost(),
-						input.getMultipleChoice(), options, votes)
-				: poll.get();
-		pollRepository.save(p);
-		return ResponseEntity.ok(PollOutput.fromPoll(p));
+		voteRepository.findAllById(p.getVotes()).forEach(votes::add);
+		Poll poll = new Poll(p.getPollId(), p.getTitle(), p.getDescription(), p.getMultipleChoice(),
+				options, votes);
+		pollRepository.save(poll);
+		return ResponseEntity.ok(PollOutput.fromPoll(poll));
 	}
 
-	@Operation(summary = "Delete a poll object by its id")
+	@Operation(summary = "Kitöröl egy poll objektumot id alapján idempotens módon")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Delete a poll object from database by id, or return successfully if it does not exist", content = {
+			@ApiResponse(responseCode = "200", description = "Kitöröl egy poll objektumot id alapján, ha létezik, vagy visszatér sikeresen ha nem létezett.", content = {
 					@Content(schema = @Schema(implementation = String.class)) }) })
 	@DeleteMapping("/{id}")
 	ResponseEntity<String> deletePoll(
-			@PathVariable(value = "id") @Pattern(regexp = Constants.UUID_REGEX, message = "Invalid UUID format") final String pollId) {
+			@PathVariable(value = "id") final String pollId) {
 		pollRepository.deleteById(pollId);
-		return ResponseEntity.ok(pollId);
+		return ResponseEntity.ok(String.format("\"%s\"", pollId));
 	}
 }

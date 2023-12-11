@@ -5,17 +5,16 @@ import java.util.List;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import xyz.zoltankerezsi.eventorganizer.Constants;
 
-@ToString
 @Getter
 @Setter
-public class PollInput {
+public class OptionInput {
     @Pattern(regexp = Constants.UUID_REGEX, message = "invalid UUID format")
-    private String pollId;
+    private String optionId;
 
     @NotBlank(message = "mandatory field")
     private String title;
@@ -23,11 +22,12 @@ public class PollInput {
     @NotBlank(message = "mandatory field")
     private String description;
 
-    @NotNull(message = "must not be null")
-    private Boolean multipleChoice;
+    @PositiveOrZero(message = "cannot be negative")
+    private Long price;
 
-    @NotNull(message = "must not be null")
-    private List<@Pattern(regexp = Constants.UUID_REGEX, message = "invalid UUID format") String> options;
+    @NotBlank(message = "mandatory field")
+    @Pattern(regexp = Constants.UUID_REGEX, message = "invalid UUID format")
+    private String poll;
 
     @NotNull(message = "must not be null")
     private List<@Pattern(regexp = Constants.UUID_REGEX, message = "invalid UUID format") String> votes;

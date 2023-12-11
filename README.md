@@ -23,3 +23,8 @@ A felhasználók nem lesznek autentikálva, azaz bárki beírhat bármilyen neve
 - **Poll**: a szavazást jelképező objektum, címmel és egy rövid leírással
 - **Option**: egy poll-hoz tartozó választási lehetőség, címmel, leírással és árral
 - **Vote**: egy felhasználó neve, a poll objektum és a kiválasztott opció
+
+### Eszközök:
+
+- OpenApiv3 to Markdown: https://swagger-markdown-ui.netlify.app/
+- Markdown to PDF: https://cloudconvert.com/md-to-pdf

@@ -2,8 +2,10 @@ package xyz.zoltankerezsi.eventorganizer.model;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -29,15 +31,12 @@ public class Poll {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "final_cost", nullable = true)
-    private Long finalCost;
-
     @Column(name = "multiple_choice")
     private Boolean multipleChoice;
 
-    @OneToMany(mappedBy = "option")
+    @OneToMany(mappedBy = "poll", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Option> options;
 
-    @OneToMany(mappedBy = "vote")
+    @OneToMany(mappedBy = "poll", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vote> votes;
 }

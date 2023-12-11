@@ -1,7 +1,6 @@
 package xyz.zoltankerezsi.eventorganizer.dto;
 
 import java.util.List;
-import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,16 +16,14 @@ public class PollOutput {
     private String pollId;
     private String title;
     private String description;
-    private Long finalCost;
     private Boolean multipleChoice;
     private List<String> options;
     private List<String> votes;
 
     public static PollOutput fromPoll(Poll poll) {
-        String pollId = poll.getPollId().toString();
+        String pollId = poll.getPollId();
         String title = poll.getTitle();
         String description = poll.getDescription();
-        Long finalCost = poll.getFinalCost();
         Boolean multipleChoice = poll.getMultipleChoice();
         List<String> options = poll
                 .getOptions()
@@ -38,6 +35,6 @@ public class PollOutput {
                 .stream()
                 .map(Vote::getVoteId)
                 .toList();
-        return new PollOutput(pollId, title, description, finalCost, multipleChoice, options, votes);
+        return new PollOutput(pollId, title, description, multipleChoice, options, votes);
     }
 }

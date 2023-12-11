@@ -6,13 +6,16 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
+import { PollOutput } from '../../models/poll-output';
 
-export interface OptionIndex$Params {
+export interface GetPoll$Params {
+  id: string;
 }
 
-export function optionIndex(http: HttpClient, rootUrl: string, params?: OptionIndex$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
-  const rb = new RequestBuilder(rootUrl, optionIndex.PATH, 'get');
+export function getPoll(http: HttpClient, rootUrl: string, params: GetPoll$Params, context?: HttpContext): Observable<StrictHttpResponse<PollOutput>> {
+  const rb = new RequestBuilder(rootUrl, getPoll.PATH, 'get');
   if (params) {
+    rb.path('id', params.id, {});
   }
 
   return http.request(
@@ -20,9 +23,9 @@ export function optionIndex(http: HttpClient, rootUrl: string, params?: OptionIn
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<string>;
+      return r as StrictHttpResponse<PollOutput>;
     })
   );
 }
 
-optionIndex.PATH = '/option/';
+getPoll.PATH = '/polls/{id}';
