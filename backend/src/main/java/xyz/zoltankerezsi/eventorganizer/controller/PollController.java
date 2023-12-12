@@ -60,7 +60,7 @@ class PollController {
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Visszaadja a poll objektumot az adatbázisból, ha létezik.", content = {
 					@Content(schema = @Schema(implementation = PollOutput.class)) }),
-			@ApiResponse(responseCode = "404", description = "Ha poll objektum nem található.", content = @Content(schema = @Schema(implementation = String.class))) })
+			@ApiResponse(responseCode = "404", description = "Ha az poll objektum nem található.", content = @Content(schema = @Schema(implementation = String.class))) })
 	@GetMapping("/{id}")
 	ResponseEntity<PollOutput> getPoll(@PathVariable(value = "id") final String pollId) {
 		return pollRepository.findById(pollId)
@@ -71,9 +71,9 @@ class PollController {
 
 	@Operation(summary = "Frissít vagy beilleszt egy poll objektumot az adatbázisba")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Validálja a bejövő poll objektum adatait, majd frissítit a poll objectumot, ha ugyonlyan id-val létezik az adatbázisban, különben beilleszt egy újat.", content = {
+			@ApiResponse(responseCode = "200", description = "Validálja a bejövő poll objektum adatait, majd frissítit a poll objektumot, ha ugyanolyan id-val már létezik az adatbázisban, különben beilleszt egy újat.", content = {
 					@Content(schema = @Schema(implementation = PollOutput.class)) }),
-			@ApiResponse(responseCode = "400", description = "Működésbe lép, ha a poll objectum bármely mezője a validációnak nem megfelelő formátumú. Visszaküldi a hibás mezőket és a hibát egy JSON objektumban.", content = @Content(schema = @Schema(implementation = Map.class))) })
+			@ApiResponse(responseCode = "400", description = "Működésbe lép, ha a poll objektum bármely mezője a validációnak nem megfelelő formátumú. Visszaküldi a hibás mezőket és a hibákat egy JSON objektumban.", content = @Content(schema = @Schema(implementation = Map.class))) })
 	@PutMapping
 	ResponseEntity<PollOutput> putPoll(@Valid @RequestBody final PollInput p) {
 		List<Option> options = new ArrayList<>();
@@ -88,7 +88,7 @@ class PollController {
 
 	@Operation(summary = "Kitöröl egy poll objektumot id alapján idempotens módon")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Kitöröl egy poll objektumot id alapján, ha létezik, vagy visszatér sikeresen ha nem létezett.", content = {
+			@ApiResponse(responseCode = "200", description = "Kitöröl egy poll objektumot id alapján, ha létezik, vagy visszatér sikeresen ha nem létezett. A hivatkozó objektumokból is kitörli a rá mutatő referenciát.", content = {
 					@Content(schema = @Schema(implementation = String.class)) }) })
 	@DeleteMapping("/{id}")
 	ResponseEntity<String> deletePoll(

@@ -29,4 +29,4 @@ export function putPoll(http: HttpClient, rootUrl: string, params: PutPoll$Param
   );
 }
 
-putPoll.PATH = '/polls/';
+putPoll.PATH = '/polls';

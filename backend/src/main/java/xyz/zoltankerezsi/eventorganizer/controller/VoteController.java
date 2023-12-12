@@ -2,6 +2,7 @@ package xyz.zoltankerezsi.eventorganizer.controller;
 
 import java.util.Optional;
 
+import org.hibernate.mapping.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import xyz.zoltankerezsi.eventorganizer.dto.OptionOutput;
 import xyz.zoltankerezsi.eventorganizer.dto.VoteInput;
 import xyz.zoltankerezsi.eventorganizer.dto.VoteOutput;
 import xyz.zoltankerezsi.eventorganizer.model.Option;
@@ -44,6 +46,11 @@ class VoteController {
     @Autowired
     private VoteRepository voteRepository;
 
+    @Operation(summary = "Lekérdez egy poll objektumot id alapján")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Visszaadja a vote objektumot az adatbázisból, ha létezik.", content = {
+                    @Content(schema = @Schema(implementation = VoteOutput.class)) }),
+            @ApiResponse(responseCode = "404", description = "Ha a vote objektum nem található.", content = @Content(schema = @Schema(implementation = String.class))) })
     @GetMapping("/{id}")
     ResponseEntity<VoteOutput> getVote(@PathVariable(value = "id") final String voteId) {
         return voteRepository.findById(voteId)
@@ -52,6 +59,11 @@ class VoteController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, voteId));
     }
 
+    @Operation(summary = "Frissít vagy beilleszt egy vote objektumot az adatbázisba")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Validálja a bejövő vote objektum adatait, majd frissítit a vote objektumot, ha ugyanolyan id-val már létezik az adatbázisban, különben beilleszt egy újat.", content = {
+                    @Content(schema = @Schema(implementation = OptionOutput.class)) }),
+            @ApiResponse(responseCode = "400", description = "Működésbe lép, ha a vote objektum bármely mezője a validációnak nem megfelelő formátumú. Visszaküldi a hibás mezőket és a hibákat egy JSON objektumban.", content = @Content(schema = @Schema(implementation = Map.class))) })
     @PutMapping
     ResponseEntity<VoteOutput> putVote(@Valid @RequestBody final VoteInput v,
             @CookieValue(name = "username", required = true) String username) {

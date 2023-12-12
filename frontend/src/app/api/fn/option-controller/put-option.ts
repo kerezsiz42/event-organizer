@@ -6,13 +6,17 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
+import { OptionInput } from '../../models/option-input';
+import { OptionOutput } from '../../models/option-output';
 
 export interface PutOption$Params {
+      body: OptionInput
 }
 
-export function putOption(http: HttpClient, rootUrl: string, params?: PutOption$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
+export function putOption(http: HttpClient, rootUrl: string, params: PutOption$Params, context?: HttpContext): Observable<StrictHttpResponse<OptionOutput>> {
   const rb = new RequestBuilder(rootUrl, putOption.PATH, 'put');
   if (params) {
+    rb.body(params.body, 'application/json');
   }
 
   return http.request(
@@ -20,9 +24,9 @@ export function putOption(http: HttpClient, rootUrl: string, params?: PutOption$
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<string>;
+      return r as StrictHttpResponse<OptionOutput>;
     })
   );
 }
 
-putOption.PATH = '/options/';
+putOption.PATH = '/options';

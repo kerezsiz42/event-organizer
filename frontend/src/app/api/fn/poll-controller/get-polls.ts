@@ -26,4 +26,4 @@ export function getPolls(http: HttpClient, rootUrl: string, params?: GetPolls$Pa
   );
 }
 
-getPolls.PATH = '/polls/';
+getPolls.PATH = '/polls';

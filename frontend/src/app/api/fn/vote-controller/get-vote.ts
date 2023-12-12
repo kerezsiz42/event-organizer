@@ -6,13 +6,16 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
+import { VoteOutput } from '../../models/vote-output';
 
 export interface GetVote$Params {
+  id: string;
 }
 
-export function getVote(http: HttpClient, rootUrl: string, params?: GetVote$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
+export function getVote(http: HttpClient, rootUrl: string, params: GetVote$Params, context?: HttpContext): Observable<StrictHttpResponse<VoteOutput>> {
   const rb = new RequestBuilder(rootUrl, getVote.PATH, 'get');
   if (params) {
+    rb.path('id', params.id, {});
   }
 
   return http.request(
@@ -20,7 +23,7 @@ export function getVote(http: HttpClient, rootUrl: string, params?: GetVote$Para
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<string>;
+      return r as StrictHttpResponse<VoteOutput>;
     })
   );
 }

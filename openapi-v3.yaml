@@ -6,31 +6,46 @@ servers:
 - url: http://localhost:8080
   description: Generated server url
 paths:
-  /votes/:
+  /votes:
     put:
       tags:
       - vote-controller
+      summary: Frissít vagy beilleszt egy vote objektumot az adatbázisba
       operationId: putVote
+      parameters:
+      - name: username
+        in: cookie
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoteInput'
+        required: true
       responses:
         "400":
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: string
-        "200":
-          description: OK
+          description: "Működésbe lép, ha a vote objektum bármely mezője a validá\
+            ciónak nem megfelelő formátumú. Visszaküldi a hibás mezőket és a hibá\
+            kat egy JSON objektumban."
           content:
             application/json:
               schema:
                 type: string
-  /polls/:
+        "200":
+          description: "Validálja a bejövő vote objektum adatait, majd frissítit a\
+            \ vote objektumot, ha ugyanolyan id-val már létezik az adatbázisban, kü\
+            lönben beilleszt egy újat."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OptionOutput'
+  /polls:
     get:
       tags:
       - poll-controller
-      summary: Get all poll objects
+      summary: Visszaküldi az összess poll objektumot
       operationId: getPolls
       responses:
         "400":
@@ -42,8 +57,8 @@ paths:
                 additionalProperties:
                   type: string
         "200":
-          description: "Retrieve all poll objects from database, does not throw exceptions.\
-            \ In case the database is empty, returns an empty array"
+          description: "Visszaküldi az összess poll objektumot. Nem dob kivételt.\
+            \ Ha az adatbázis üres, akkor egy üres array-el tér vissza."
           content:
             application/json:
               schema:
@@ -53,7 +68,7 @@ paths:
     put:
       tags:
       - poll-controller
-      summary: Update or insert a poll object into database
+      summary: Frissít vagy beilleszt egy poll objektumot az adatbázisba
       operationId: putPoll
       requestBody:
         content:
@@ -63,90 +78,61 @@ paths:
         required: true
       responses:
         "400":
-          description: Takes into action when any field of the poll object to be updated/inserted
-            is invalid
+          description: "Működésbe lép, ha a poll objektum bármely mezője a validá\
+            ciónak nem megfelelő formátumú. Visszaküldi a hibás mezőket és a hibá\
+            kat egy JSON objektumban."
           content:
             application/json:
               schema:
                 type: string
         "200":
-          description: "Parse and validate poll object data, then update a poll object\
-            \ with the same id if it exists, or insert a new one"
+          description: "Validálja a bejövő poll objektum adatait, majd frissítit a\
+            \ poll objektumot, ha ugyanolyan id-val már létezik az adatbázisban, kü\
+            lönben beilleszt egy újat."
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PollOutput'
-  /options/:
+  /options:
     put:
       tags:
       - option-controller
+      summary: Frissít vagy beilleszt egy option objektumot az adatbázisba
       operationId: putOption
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OptionInput'
+        required: true
       responses:
         "400":
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: string
-        "200":
-          description: OK
+          description: "Működésbe lép, ha az option objektum bármely mezője a validá\
+            ciónak nem megfelelő formátumú. Visszaküldi a hibás mezőket és a hibá\
+            kat egy JSON objektumban."
           content:
             application/json:
               schema:
                 type: string
+        "200":
+          description: "Validálja a bejövő option objektum adatait, majd frissítit\
+            \ a option objektumot, ha ugyanolyan id-val már létezik az adatbázisban,\
+            \ különben beilleszt egy újat."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OptionOutput'
   /votes/{id}:
     get:
       tags:
       - vote-controller
+      summary: Lekérdez egy poll objektumot id alapján
       operationId: getVote
-      responses:
-        "400":
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: string
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: string
-    delete:
-      tags:
-      - vote-controller
-      operationId: deleteVote
-      responses:
-        "400":
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: string
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: string
-  /polls/{id}:
-    get:
-      tags:
-      - poll-controller
-      summary: Get a single poll object by its id
-      operationId: getPoll
       parameters:
       - name: id
         in: path
         required: true
         schema:
-          pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
           type: string
       responses:
         "400":
@@ -158,28 +144,27 @@ paths:
                 additionalProperties:
                   type: string
         "404":
-          description: Poll object not found
+          description: Ha a vote objektum nem található.
           content:
             application/json:
               schema:
                 type: string
         "200":
-          description: Retrieve a poll object from database if it exists
+          description: "Visszaadja a vote objektumot az adatbázisból, ha létezik."
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PollOutput'
+                $ref: '#/components/schemas/VoteOutput'
     delete:
       tags:
-      - poll-controller
-      summary: Delete a poll object by its id
-      operationId: deletePoll
+      - vote-controller
+      summary: Kitöröl egy vote objektumot id alapján idempotens módon
+      operationId: deleteVote
       parameters:
       - name: id
         in: path
         required: true
         schema:
-          pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
           type: string
       responses:
         "400":
@@ -191,8 +176,70 @@ paths:
                 additionalProperties:
                   type: string
         "200":
-          description: "Delete a poll object from database by id, or return successfully\
-            \ if it does not exist"
+          description: "Kitöröl egy vote objektumot id alapján, ha létezik, vagy visszaté\
+            r sikeresen ha nem létezett. A hivatkozó objektumokból is kitörli a rá\
+            \ mutatő referenciát."
+          content:
+            application/json:
+              schema:
+                type: string
+  /polls/{id}:
+    get:
+      tags:
+      - poll-controller
+      summary: Lekérdez egy poll objektumot id alapján
+      operationId: getPoll
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "200":
+          description: "Visszaadja a poll objektumot az adatbázisból, ha létezik."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PollOutput'
+        "404":
+          description: Ha az poll objektum nem található.
+          content:
+            application/json:
+              schema:
+                type: string
+    delete:
+      tags:
+      - poll-controller
+      summary: Kitöröl egy poll objektumot id alapján idempotens módon
+      operationId: deletePoll
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "200":
+          description: "Kitöröl egy poll objektumot id alapján, ha létezik, vagy visszaté\
+            r sikeresen ha nem létezett. A hivatkozó objektumokból is kitörli a rá\
+            \ mutatő referenciát."
           content:
             application/json:
               schema:
@@ -201,7 +248,14 @@ paths:
     get:
       tags:
       - option-controller
+      summary: Lekérdez egy option objektumot id alapján
       operationId: getOption
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
         "400":
           description: Bad Request
@@ -212,7 +266,13 @@ paths:
                 additionalProperties:
                   type: string
         "200":
-          description: OK
+          description: "Visszaadja az option objektumot az adatbázisból, ha létezik."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OptionOutput'
+        "404":
+          description: Ha az option objektum nem található.
           content:
             application/json:
               schema:
@@ -220,7 +280,14 @@ paths:
     delete:
       tags:
       - option-controller
+      summary: Kitöröl egy option objektumot id alapján idempotens módon
       operationId: deleteOption
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
         "400":
           description: Bad Request
@@ -231,13 +298,48 @@ paths:
                 additionalProperties:
                   type: string
         "200":
-          description: OK
+          description: "Kitöröl egy option objektumot id alapján, ha létezik, vagy\
+            \ visszatér sikeresen ha nem létezett. A hivatkozó objektumokból is kitö\
+            rli a rá mutatő referenciát."
           content:
             application/json:
               schema:
                 type: string
 components:
   schemas:
+    VoteInput:
+      required:
+      - option
+      - poll
+      type: object
+      properties:
+        voteId:
+          pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+          type: string
+        poll:
+          pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+          type: string
+        option:
+          pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+          type: string
+    OptionOutput:
+      type: object
+      properties:
+        optionId:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: integer
+          format: int64
+        poll:
+          type: string
+        votes:
+          type: array
+          items:
+            type: string
     PollInput:
       required:
       - description
@@ -285,3 +387,40 @@ components:
           type: array
           items:
             type: string
+    OptionInput:
+      required:
+      - description
+      - poll
+      - title
+      - votes
+      type: object
+      properties:
+        optionId:
+          pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: integer
+          format: int64
+        poll:
+          pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+          type: string
+        votes:
+          type: array
+          items:
+            pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+            type: string
+    VoteOutput:
+      type: object
+      properties:
+        voteId:
+          type: string
+        username:
+          type: string
+        poll:
+          type: string
+        option:
+          type: string

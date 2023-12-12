@@ -13,6 +13,7 @@ import { deleteOption } from '../fn/option-controller/delete-option';
 import { DeleteOption$Params } from '../fn/option-controller/delete-option';
 import { getOption } from '../fn/option-controller/get-option';
 import { GetOption$Params } from '../fn/option-controller/get-option';
+import { OptionOutput } from '../models/option-output';
 import { putOption } from '../fn/option-controller/put-option';
 import { PutOption$Params } from '../fn/option-controller/put-option';
 
@@ -23,27 +24,35 @@ export class OptionControllerService extends BaseService {
   }
 
   /** Path part for operation `putOption()` */
-  static readonly PutOptionPath = '/options/';
+  static readonly PutOptionPath = '/options';
 
   /**
+   * Frissít vagy beilleszt egy option objektumot az adatbázisba.
+   *
+   *
+   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `putOption()` instead.
    *
-   * This method doesn't expect any request body.
+   * This method sends `application/json` and handles request body of type `application/json`.
    */
-  putOption$Response(params?: PutOption$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
+  putOption$Response(params: PutOption$Params, context?: HttpContext): Observable<StrictHttpResponse<OptionOutput>> {
     return putOption(this.http, this.rootUrl, params, context);
   }
 
   /**
+   * Frissít vagy beilleszt egy option objektumot az adatbázisba.
+   *
+   *
+   *
    * This method provides access only to the response body.
    * To access the full response (for headers, for example), `putOption$Response()` instead.
    *
-   * This method doesn't expect any request body.
+   * This method sends `application/json` and handles request body of type `application/json`.
    */
-  putOption(params?: PutOption$Params, context?: HttpContext): Observable<string> {
+  putOption(params: PutOption$Params, context?: HttpContext): Observable<OptionOutput> {
     return this.putOption$Response(params, context).pipe(
-      map((r: StrictHttpResponse<string>): string => r.body)
+      map((r: StrictHttpResponse<OptionOutput>): OptionOutput => r.body)
     );
   }
 
@@ -51,24 +60,32 @@ export class OptionControllerService extends BaseService {
   static readonly GetOptionPath = '/options/{id}';
 
   /**
+   * Lekérdez egy option objektumot id alapján.
+   *
+   *
+   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `getOption()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getOption$Response(params?: GetOption$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
+  getOption$Response(params: GetOption$Params, context?: HttpContext): Observable<StrictHttpResponse<OptionOutput>> {
     return getOption(this.http, this.rootUrl, params, context);
   }
 
   /**
+   * Lekérdez egy option objektumot id alapján.
+   *
+   *
+   *
    * This method provides access only to the response body.
    * To access the full response (for headers, for example), `getOption$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getOption(params?: GetOption$Params, context?: HttpContext): Observable<string> {
+  getOption(params: GetOption$Params, context?: HttpContext): Observable<OptionOutput> {
     return this.getOption$Response(params, context).pipe(
-      map((r: StrictHttpResponse<string>): string => r.body)
+      map((r: StrictHttpResponse<OptionOutput>): OptionOutput => r.body)
     );
   }
 
@@ -76,22 +93,30 @@ export class OptionControllerService extends BaseService {
   static readonly DeleteOptionPath = '/options/{id}';
 
   /**
+   * Kitöröl egy option objektumot id alapján idempotens módon.
+   *
+   *
+   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `deleteOption()` instead.
    *
    * This method doesn't expect any request body.
    */
-  deleteOption$Response(params?: DeleteOption$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
+  deleteOption$Response(params: DeleteOption$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
     return deleteOption(this.http, this.rootUrl, params, context);
   }
 
   /**
+   * Kitöröl egy option objektumot id alapján idempotens módon.
+   *
+   *
+   *
    * This method provides access only to the response body.
    * To access the full response (for headers, for example), `deleteOption$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  deleteOption(params?: DeleteOption$Params, context?: HttpContext): Observable<string> {
+  deleteOption(params: DeleteOption$Params, context?: HttpContext): Observable<string> {
     return this.deleteOption$Response(params, context).pipe(
       map((r: StrictHttpResponse<string>): string => r.body)
     );

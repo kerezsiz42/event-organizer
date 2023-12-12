@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.mapping.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +47,11 @@ class OptionController {
     @Autowired
     private VoteRepository voteRepository;
 
+    @Operation(summary = "Lekérdez egy option objektumot id alapján")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Visszaadja az option objektumot az adatbázisból, ha létezik.", content = {
+                    @Content(schema = @Schema(implementation = OptionOutput.class)) }),
+            @ApiResponse(responseCode = "404", description = "Ha az option objektum nem található.", content = @Content(schema = @Schema(implementation = String.class))) })
     @GetMapping("/{id}")
     ResponseEntity<OptionOutput> getOption(@PathVariable(value = "id") final String optionId) {
         return optionRepository.findById(optionId)
@@ -54,6 +60,11 @@ class OptionController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, optionId));
     }
 
+    @Operation(summary = "Frissít vagy beilleszt egy option objektumot az adatbázisba")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Validálja a bejövő option objektum adatait, majd frissítit a option objektumot, ha ugyanolyan id-val már létezik az adatbázisban, különben beilleszt egy újat.", content = {
+                    @Content(schema = @Schema(implementation = OptionOutput.class)) }),
+            @ApiResponse(responseCode = "400", description = "Működésbe lép, ha az option objektum bármely mezője a validációnak nem megfelelő formátumú. Visszaküldi a hibás mezőket és a hibákat egy JSON objektumban.", content = @Content(schema = @Schema(implementation = Map.class))) })
     @PutMapping
     ResponseEntity<OptionOutput> putOption(@Valid @RequestBody final OptionInput o) {
         List<Vote> votes = new ArrayList<>();

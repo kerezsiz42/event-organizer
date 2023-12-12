@@ -26,10 +26,10 @@ export class PollControllerService extends BaseService {
   }
 
   /** Path part for operation `getPolls()` */
-  static readonly GetPollsPath = '/polls/';
+  static readonly GetPollsPath = '/polls';
 
   /**
-   * Get all poll objects.
+   * Visszaküldi az összess poll objektumot.
    *
    *
    *
@@ -43,7 +43,7 @@ export class PollControllerService extends BaseService {
   }
 
   /**
-   * Get all poll objects.
+   * Visszaküldi az összess poll objektumot.
    *
    *
    *
@@ -59,10 +59,10 @@ export class PollControllerService extends BaseService {
   }
 
   /** Path part for operation `putPoll()` */
-  static readonly PutPollPath = '/polls/';
+  static readonly PutPollPath = '/polls';
 
   /**
-   * Update or insert a poll object into database.
+   * Frissít vagy beilleszt egy poll objektumot az adatbázisba.
    *
    *
    *
@@ -76,7 +76,7 @@ export class PollControllerService extends BaseService {
   }
 
   /**
-   * Update or insert a poll object into database.
+   * Frissít vagy beilleszt egy poll objektumot az adatbázisba.
    *
    *
    *
@@ -95,7 +95,7 @@ export class PollControllerService extends BaseService {
   static readonly GetPollPath = '/polls/{id}';
 
   /**
-   * Get a single poll object by its id.
+   * Lekérdez egy poll objektumot id alapján.
    *
    *
    *
@@ -109,7 +109,7 @@ export class PollControllerService extends BaseService {
   }
 
   /**
-   * Get a single poll object by its id.
+   * Lekérdez egy poll objektumot id alapján.
    *
    *
    *
@@ -128,7 +128,7 @@ export class PollControllerService extends BaseService {
   static readonly DeletePollPath = '/polls/{id}';
 
   /**
-   * Delete a poll object by its id.
+   * Kitöröl egy poll objektumot id alapján idempotens módon.
    *
    *
    *
@@ -142,7 +142,7 @@ export class PollControllerService extends BaseService {
   }
 
   /**
-   * Delete a poll object by its id.
+   * Kitöröl egy poll objektumot id alapján idempotens módon.
    *
    *
    *

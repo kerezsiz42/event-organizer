@@ -8,11 +8,13 @@ import { RequestBuilder } from '../../request-builder';
 
 
 export interface DeleteVote$Params {
+  id: string;
 }
 
-export function deleteVote(http: HttpClient, rootUrl: string, params?: DeleteVote$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
+export function deleteVote(http: HttpClient, rootUrl: string, params: DeleteVote$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
   const rb = new RequestBuilder(rootUrl, deleteVote.PATH, 'delete');
   if (params) {
+    rb.path('id', params.id, {});
   }
 
   return http.request(
