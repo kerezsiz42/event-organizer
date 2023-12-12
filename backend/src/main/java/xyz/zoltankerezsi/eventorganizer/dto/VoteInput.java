@@ -10,6 +10,7 @@ import xyz.zoltankerezsi.eventorganizer.Constants;
 @Getter
 @Setter
 public class VoteInput {
+    @NotBlank(message = "mandatory field")
     @Pattern(regexp = Constants.UUID_REGEX, message = "invalid UUID format")
     private String voteId;
 

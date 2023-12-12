@@ -29,7 +29,7 @@ export class PollControllerService extends BaseService {
   static readonly GetPollsPath = '/polls';
 
   /**
-   * Visszaküldi az összess poll objektumot.
+   * Visszaküldi az összes poll objektumot.
    *
    *
    *
@@ -43,7 +43,7 @@ export class PollControllerService extends BaseService {
   }
 
   /**
-   * Visszaküldi az összess poll objektumot.
+   * Visszaküldi az összes poll objektumot.
    *
    *
    *

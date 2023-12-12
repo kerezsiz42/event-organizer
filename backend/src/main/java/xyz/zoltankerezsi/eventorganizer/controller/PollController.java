@@ -45,9 +45,9 @@ class PollController {
 	@Autowired
 	private VoteRepository voteRepository;
 
-	@Operation(summary = "Visszaküldi az összess poll objektumot")
+	@Operation(summary = "Visszaküldi az összes poll objektumot")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Visszaküldi az összess poll objektumot. Nem dob kivételt. Ha az adatbázis üres, akkor egy üres array-el tér vissza.", content = {
+			@ApiResponse(responseCode = "200", description = "Visszaküldi az összes poll objektumot. Nem dob kivételt. Ha az adatbázis üres, akkor egy üres array-el tér vissza.", content = {
 					@Content(array = @ArraySchema(schema = @Schema(implementation = PollOutput.class))) }) })
 	@GetMapping
 	ResponseEntity<List<PollOutput>> getPolls() {

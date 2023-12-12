@@ -13,6 +13,7 @@ import xyz.zoltankerezsi.eventorganizer.Constants;
 @Getter
 @Setter
 public class OptionInput {
+    @NotBlank(message = "mandatory field")
     @Pattern(regexp = Constants.UUID_REGEX, message = "invalid UUID format")
     private String optionId;
 
@@ -22,6 +23,7 @@ public class OptionInput {
     @NotBlank(message = "mandatory field")
     private String description;
 
+    @NotNull(message = "cannot be null")
     @PositiveOrZero(message = "cannot be negative")
     private Long price;
 

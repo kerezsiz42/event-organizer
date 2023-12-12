@@ -2,6 +2,7 @@ package xyz.zoltankerezsi.eventorganizer.dto;
 
 import java.util.List;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,11 +14,17 @@ import xyz.zoltankerezsi.eventorganizer.model.Vote;
 @Setter
 @AllArgsConstructor
 public class PollOutput {
+    @NotNull
     private String pollId;
+    @NotNull
     private String title;
+    @NotNull
     private String description;
+    @NotNull
     private Boolean multipleChoice;
+    @NotNull
     private List<String> options;
+    @NotNull
     private List<String> votes;
 
     public static PollOutput fromPoll(Poll poll) {

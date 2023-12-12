@@ -2,9 +2,9 @@
 /* eslint-disable */
 export interface OptionInput {
   description: string;
-  optionId?: string;
+  optionId: string;
   poll: string;
-  price?: number;
+  price: number;
   title: string;
   votes: Array<string>;
 }

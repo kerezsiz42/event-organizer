@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "generate-api-docs": "curl http://localhost:8080/v3/api-docs.yaml > ../openapi-v3.yaml",
+    "generate-api-yaml": "curl http://localhost:8080/v3/api-docs.yaml > ../openapi-v3.yaml",
+    "generate-api-docs": "npm run generate-api-yaml && openapi-to-md -s ../openapi-v3.yaml ../API_DOCS.md",
     "generate-ng-api": "npm run generate-api-docs && ng-openapi-gen --input ../openapi-v3.yaml --output src/app/api"
   },
   "private": true,
@@ -20,6 +21,7 @@
     "@angular/platform-browser": "^17.0.0",
     "@angular/platform-browser-dynamic": "^17.0.0",
     "@angular/router": "^17.0.0",
+    "openapi-to-md": "^1.0.24",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.2"

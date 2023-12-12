@@ -3,5 +3,5 @@
 export interface VoteInput {
   option: string;
   poll: string;
-  voteId?: string;
+  voteId: string;
 }
