@@ -80,7 +80,7 @@ class PollController {
 		optionRepository.findAllById(p.getOptions()).forEach(options::add);
 		List<Vote> votes = new ArrayList<>();
 		voteRepository.findAllById(p.getVotes()).forEach(votes::add);
-		Poll poll = new Poll(p.getPollId(), p.getTitle(), p.getDescription(), p.getMultipleChoice(),
+		Poll poll = new Poll(p.getPollId(), p.getTitle(), p.getDescription(), p.getMultipleResult(),
 				options, votes);
 		pollRepository.save(poll);
 		return ResponseEntity.ok(PollOutput.fromPoll(poll));

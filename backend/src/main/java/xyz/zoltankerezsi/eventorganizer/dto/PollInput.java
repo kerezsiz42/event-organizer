@@ -25,7 +25,7 @@ public class PollInput {
     private String description;
 
     @NotNull(message = "must not be null")
-    private Boolean multipleChoice;
+    private Boolean multipleResult;
 
     @NotNull(message = "must not be null")
     private List<@Pattern(regexp = Constants.UUID_REGEX, message = "invalid UUID format") String> options;

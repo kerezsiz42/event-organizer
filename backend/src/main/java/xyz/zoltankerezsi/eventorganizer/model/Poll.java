@@ -31,8 +31,8 @@ public class Poll {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "multiple_choice")
-    private Boolean multipleChoice;
+    @Column(name = "multiple_result")
+    private Boolean multipleResult;
 
     @OneToMany(mappedBy = "poll", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Option> options;

@@ -21,7 +21,7 @@ public class PollOutput {
     @NotNull
     private String description;
     @NotNull
-    private Boolean multipleChoice;
+    private Boolean multipleResult;
     @NotNull
     private List<String> options;
     @NotNull
@@ -31,7 +31,7 @@ public class PollOutput {
         String pollId = poll.getPollId();
         String title = poll.getTitle();
         String description = poll.getDescription();
-        Boolean multipleChoice = poll.getMultipleChoice();
+        Boolean multipleResult = poll.getMultipleResult();
         List<String> options = poll
                 .getOptions()
                 .stream()
@@ -42,6 +42,6 @@ public class PollOutput {
                 .stream()
                 .map(Vote::getVoteId)
                 .toList();
-        return new PollOutput(pollId, title, description, multipleChoice, options, votes);
+        return new PollOutput(pollId, title, description, multipleResult, options, votes);
     }
 }

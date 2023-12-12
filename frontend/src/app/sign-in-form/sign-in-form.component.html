@@ -1,0 +1,19 @@
+<h1 class="text-2xl font-bold p-2">Welcome to Event Organizer</h1>
+<hr class="bg-gray-300 border-0 rounded h-1 mx-3" />
+<p class="p-1">What's your name?</p>
+<form class="m-2 flex flex-col" onsubmit="event.preventDefault()">
+  <input
+    type="text"
+    class="m-2 rounded border-2 border-gray-300 outline-none p-2"
+    autofocus
+    [value]="username()"
+    (input)="onUsernameChange($event)"
+  />
+  <button
+    type="button"
+    class="rounded border-2 border-gray-300 p-2"
+    (click)="signIn()"
+  >
+    Sign In
+  </button>
+</form>

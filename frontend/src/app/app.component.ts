@@ -2,47 +2,47 @@ import { Component, inject, OnInit, signal } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterOutlet } from "@angular/router";
 import { PollControllerService } from "./api/services";
-import { CustomDialogComponent } from "./custom-dialog/custom-dialog";
+import { CustomDialogComponent } from "./custom-dialog/custom-dialog.component";
+import { PollOutput } from "./api/models";
+import { PollItemComponent } from "./poll-item/poll-item.component";
+import { CreatePollFormComponent } from "./create-poll-form/create-poll-form.component";
+import { SignInFormComponent } from "./sign-in-form/sign-in-form.component";
+import { CreateOptionFormComponent } from "./create-option-form/create-option-form.component";
 
 @Component({
   selector: "app-root",
   standalone: true,
-  imports: [CommonModule, RouterOutlet, CustomDialogComponent],
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    CustomDialogComponent,
+    PollItemComponent,
+    CreatePollFormComponent,
+    SignInFormComponent,
+    CreateOptionFormComponent,
+  ],
   templateUrl: "./app.component.html",
 })
 export class AppComponent implements OnInit {
   #pollProvider = inject(PollControllerService);
-
-  polls = signal<string[]>([]);
-  isSignedIn = signal<boolean>(false);
-  name = signal<string>("");
-
-  onNameChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.name.set(input.value);
-  }
-
-  signIn() {
-    document.cookie = `username=${encodeURIComponent(
-      this.name()
-    )};SameSite=Strict`;
-    this.checkIsSignedIn();
-  }
+  polls = signal<PollOutput[]>([]);
+  dialog = signal<DialogType>("signIn");
+  username = signal<string>("");
 
   checkIsSignedIn() {
     const match = document.cookie.match(/username=(?<username>.*)/);
     const name = match?.groups?.["username"] ?? "";
     const isSignedIn = name !== "";
     if (isSignedIn) {
-      this.name.set(decodeURIComponent(name));
+      this.username.set(decodeURIComponent(name));
+      this.dialog.set("");
     }
-    this.isSignedIn.set(isSignedIn);
   }
 
   ngOnInit() {
     this.checkIsSignedIn();
-    // this.#pollProvider
-    //   .optionIndex()
-    //   .subscribe((value) => this.polls.set(value));
+    this.#pollProvider.getPolls().subscribe((v) => this.polls.set(v));
   }
 }
+
+export type DialogType = "" | "signIn" | "createOption" | "createPoll";

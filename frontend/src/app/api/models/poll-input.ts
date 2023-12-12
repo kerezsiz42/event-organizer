@@ -2,7 +2,7 @@
 /* eslint-disable */
 export interface PollInput {
   description: string;
-  multipleChoice: boolean;
+  multipleResult: boolean;
   options: Array<string>;
   pollId: string;
   title: string;

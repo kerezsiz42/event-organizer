@@ -168,7 +168,7 @@ Visszaküldi az összes poll objektumot
   pollId: string
   title: string
   description: string
-  multipleChoice: boolean
+  multipleResult: boolean
   options?: string[]
   votes?: string[]
 }[]
@@ -199,7 +199,7 @@ Frissít vagy beilleszt egy poll objektumot az adatbázisba
   pollId: string
   title: string
   description: string
-  multipleChoice: boolean
+  multipleResult: boolean
   options?: string[]
   votes?: string[]
 }
@@ -216,7 +216,7 @@ Frissít vagy beilleszt egy poll objektumot az adatbázisba
   pollId: string
   title: string
   description: string
-  multipleChoice: boolean
+  multipleResult: boolean
   options?: string[]
   votes?: string[]
 }
@@ -278,7 +278,7 @@ Lekérdez egy poll objektumot id alapján
   pollId: string
   title: string
   description: string
-  multipleChoice: boolean
+  multipleResult: boolean
   options?: string[]
   votes?: string[]
 }
@@ -453,7 +453,7 @@ Lekérdez egy poll objektumot id alapján
   pollId: string
   title: string
   description: string
-  multipleChoice: boolean
+  multipleResult: boolean
   options?: string[]
   votes?: string[]
 }
@@ -466,7 +466,7 @@ Lekérdez egy poll objektumot id alapján
   pollId: string
   title: string
   description: string
-  multipleChoice: boolean
+  multipleResult: boolean
   options?: string[]
   votes?: string[]
 }

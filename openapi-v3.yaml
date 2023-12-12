@@ -265,18 +265,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: string
-        "404":
-          description: Ha az option objektum nem található.
-          content:
-            application/json:
-              schema:
-                type: string
         "200":
           description: "Visszaadja az option objektumot az adatbázisból, ha létezik."
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/OptionOutput'
+        "404":
+          description: Ha az option objektum nem található.
+          content:
+            application/json:
+              schema:
+                type: string
     delete:
       tags:
       - option-controller
@@ -351,7 +351,7 @@ components:
     PollInput:
       required:
       - description
-      - multipleChoice
+      - multipleResult
       - options
       - pollId
       - title
@@ -365,7 +365,7 @@ components:
           type: string
         description:
           type: string
-        multipleChoice:
+        multipleResult:
           type: boolean
         options:
           type: array
@@ -380,7 +380,7 @@ components:
     PollOutput:
       required:
       - description
-      - multipleChoice
+      - multipleResult
       - options
       - pollId
       - title
@@ -393,7 +393,7 @@ components:
           type: string
         description:
           type: string
-        multipleChoice:
+        multipleResult:
           type: boolean
         options:
           type: array
