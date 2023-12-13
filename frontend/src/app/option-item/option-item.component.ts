@@ -1,5 +1,6 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, inject } from "@angular/core";
 import { OptionOutput } from "../api/models";
+import { StorageService } from "../storage.service";
 
 @Component({
   selector: "option-item",
@@ -7,6 +8,8 @@ import { OptionOutput } from "../api/models";
   templateUrl: "./option-item.component.html",
 })
 export class OptionItemComponent {
+  storage = inject(StorageService);
+
   @Input() option!: OptionOutput;
 
   onSelectOption() {}

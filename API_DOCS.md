@@ -330,12 +330,10 @@ Frissít vagy beilleszt egy vote objektumot az adatbázisba
 
 ```ts
 {
-  optionId: string
-  title: string
-  description: string
-  price: integer
+  voteId: string
+  username: string
   poll: string
-  votes?: string[]
+  option: string
 }
 ```
 

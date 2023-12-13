@@ -1,10 +1,4 @@
-import {
-  Component,
-  Input,
-  OnInit,
-  WritableSignal,
-  inject,
-} from "@angular/core";
+import { Component, Input, WritableSignal, inject } from "@angular/core";
 import { OptionItemComponent } from "../option-item/option-item.component";
 import { DialogType } from "../app.component";
 import { StorageService } from "../storage.service";
@@ -17,7 +11,7 @@ import { PollControllerService } from "../api/services";
   templateUrl: "./poll-item.component.html",
   imports: [OptionItemComponent],
 })
-export class PollItemComponent implements OnInit {
+export class PollItemComponent {
   storage = inject(StorageService);
   #pollProvider = inject(PollControllerService);
 
@@ -30,16 +24,5 @@ export class PollItemComponent implements OnInit {
     this.dialog.set("createOption");
   }
 
-  onDeletePoll() {
-    this.#pollProvider.deletePoll({ id: this.poll.pollId }).subscribe(() => {
-      this.storage.polls.update((ps) =>
-        ps.filter((p) => p.pollId !== this.poll.pollId)
-      );
-      this.storage.syncOptionsAndVotes(this.poll);
-    });
-  }
-
-  ngOnInit() {
-    this.storage.syncOptionsAndVotes(this.poll);
-  }
+  onDeletePoll() {}
 }

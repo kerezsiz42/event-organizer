@@ -1,5 +1,12 @@
 import { Injectable, inject, signal } from "@angular/core";
-import { OptionOutput, PollOutput, VoteOutput } from "./api/models";
+import {
+  OptionInput,
+  OptionOutput,
+  PollInput,
+  PollOutput,
+  VoteInput,
+  VoteOutput,
+} from "./api/models";
 import {
   OptionControllerService,
   PollControllerService,
@@ -19,16 +26,18 @@ export class StorageService {
   votesByOptionIds = signal<Record<string, VoteOutput[]>>({});
 
   syncPolls() {
-    this.#pollProvider.getPolls().subscribe((v) => this.polls.set(v));
+    this.#pollProvider.getPolls().subscribe((ps) => {
+      this.polls.set(ps);
+      for (const p of ps) {
+        this.syncOptions(p);
+      }
+    });
   }
 
-  syncOptionsAndVotes(poll: PollOutput) {
+  syncOptions(poll: PollOutput) {
     for (const optionId of poll.options) {
       this.#optionProvider.getOption({ id: optionId }).subscribe((o) => {
-        this.optionsByPollIds.update((obp) => ({
-          ...obp,
-          [poll.pollId]: [...(obp?.[poll.pollId] ?? []), o],
-        }));
+        this.putOption(poll.pollId, o);
         this.syncVotes(o);
       });
     }
@@ -37,11 +46,70 @@ export class StorageService {
   syncVotes(option: OptionOutput) {
     for (const voteId of option.votes) {
       this.#voteProvider.getVote({ id: voteId }).subscribe((v) => {
-        this.votesByOptionIds.update((vbo) => ({
-          ...vbo,
-          [option.optionId]: [...(vbo?.[option.optionId] ?? []), v],
-        }));
+        this.putVote(option.optionId, v);
       });
     }
+  }
+
+  putPoll(poll: PollInput) {
+    return this.#pollProvider.putPoll({ body: poll }).subscribe((p) => {
+      this.polls.update((ps) => [...ps, p]);
+    });
+  }
+
+  deletePoll(poll: PollOutput) {
+    return this.#pollProvider.deletePoll({ id: poll.pollId }).subscribe(() => {
+      for (const optionId of poll.options) {
+        this.votesByOptionIds.update((vbo) => {
+          delete vbo[optionId];
+          return vbo;
+        });
+      }
+      this.optionsByPollIds.update((obp) => {
+        delete obp[poll.pollId];
+        return obp;
+      });
+      this.polls.update((ps) => ps.filter((p) => p.pollId !== poll.pollId));
+    });
+  }
+
+  putOption(pollId: string, option: OptionInput) {
+    return this.#optionProvider.putOption({ body: option }).subscribe((o) => {
+      this.optionsByPollIds.update((obp) => ({
+        ...obp,
+        [pollId]: [...(obp?.[pollId] ?? []), o],
+      }));
+    });
+  }
+
+  deleteOption(optionId: string, pollId: string) {
+    return this.#optionProvider.deleteOption({ id: optionId }).subscribe(() => {
+      this.votesByOptionIds.update((vbo) => {
+        delete vbo[optionId];
+        return vbo;
+      });
+      this.optionsByPollIds.update((obp) => ({
+        ...obp,
+        [pollId]: obp[pollId].filter((o) => o.optionId !== optionId),
+      }));
+    });
+  }
+
+  putVote(optionId: string, vote: VoteInput) {
+    return this.#voteProvider.putVote({ body: vote }).subscribe((v) => {
+      this.votesByOptionIds.update((vbo) => ({
+        ...vbo,
+        [optionId]: [...(vbo?.[optionId] ?? []), v],
+      }));
+    });
+  }
+
+  deleteVote(voteId: string, optionId: string) {
+    return this.#voteProvider.deleteVote({ id: voteId }).subscribe(() => {
+      this.votesByOptionIds.update((vbo) => ({
+        ...vbo,
+        [optionId]: vbo[optionId].filter((o) => o.voteId !== voteId),
+      }));
+    });
   }
 }

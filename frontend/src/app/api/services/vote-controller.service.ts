@@ -13,7 +13,6 @@ import { deleteVote } from '../fn/vote-controller/delete-vote';
 import { DeleteVote$Params } from '../fn/vote-controller/delete-vote';
 import { getVote } from '../fn/vote-controller/get-vote';
 import { GetVote$Params } from '../fn/vote-controller/get-vote';
-import { OptionOutput } from '../models/option-output';
 import { putVote } from '../fn/vote-controller/put-vote';
 import { PutVote$Params } from '../fn/vote-controller/put-vote';
 import { VoteOutput } from '../models/vote-output';
@@ -37,7 +36,7 @@ export class VoteControllerService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  putVote$Response(params: PutVote$Params, context?: HttpContext): Observable<StrictHttpResponse<OptionOutput>> {
+  putVote$Response(params: PutVote$Params, context?: HttpContext): Observable<StrictHttpResponse<VoteOutput>> {
     return putVote(this.http, this.rootUrl, params, context);
   }
 
@@ -51,9 +50,9 @@ export class VoteControllerService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  putVote(params: PutVote$Params, context?: HttpContext): Observable<OptionOutput> {
+  putVote(params: PutVote$Params, context?: HttpContext): Observable<VoteOutput> {
     return this.putVote$Response(params, context).pipe(
-      map((r: StrictHttpResponse<OptionOutput>): OptionOutput => r.body)
+      map((r: StrictHttpResponse<VoteOutput>): VoteOutput => r.body)
     );
   }
 

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from "@angular/core";
+import { Component, computed, inject, OnInit, signal } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterOutlet } from "@angular/router";
 import { CustomDialogComponent } from "./custom-dialog/custom-dialog.component";
@@ -28,7 +28,21 @@ export class AppComponent implements OnInit {
   dialog = signal<DialogType>("signIn");
   username = signal<string>("");
   selectedPollId = signal<string>("");
-  cost = signal<number>(0);
+
+  cost = computed(() => {
+    const votes = Object.values(this.storage.votesByOptionIds()).flat();
+    const options = Object.values(this.storage.optionsByPollIds()).flat();
+    return this.username() !== ""
+      ? votes
+          .filter((v) => v.username === this.username())
+          .reduce(
+            (acc, vote) =>
+              options.find((o) => o.votes.find((x) => x === vote.voteId))
+                ?.price ?? 0 + acc,
+            0
+          )
+      : 0;
+  });
 
   checkIsSignedIn = () => {
     const match = document.cookie.match(/username=(?<username>.*)/);

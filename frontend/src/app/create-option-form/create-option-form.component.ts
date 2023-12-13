@@ -51,7 +51,7 @@ export class CreateOptionFormComponent {
     this.#optionProvider.putOption({ body }).subscribe((o) => {
       this.#storage.optionsByPollIds.update((obp) => ({
         ...obp,
-        [this.selectedPollId()]: [...obp[this.selectedPollId()], o],
+        [this.selectedPollId()]: [...(obp?.[this.selectedPollId()] ?? []), o],
       }));
       this.dialog.set("");
       this.selectedPollId.set("");

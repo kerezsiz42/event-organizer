@@ -40,7 +40,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OptionOutput'
+                $ref: '#/components/schemas/VoteOutput'
   /polls:
     get:
       tags:
@@ -143,18 +143,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: string
-        "200":
-          description: "Visszaadja a vote objektumot az adatbázisból, ha létezik."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/VoteOutput'
         "404":
           description: Ha a vote objektum nem található.
           content:
             application/json:
               schema:
                 type: string
+        "200":
+          description: "Visszaadja a vote objektumot az adatbázisból, ha létezik."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoteOutput'
     delete:
       tags:
       - vote-controller
@@ -265,18 +265,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: string
-        "200":
-          description: "Visszaadja az option objektumot az adatbázisból, ha létezik."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OptionOutput'
         "404":
           description: Ha az option objektum nem található.
           content:
             application/json:
               schema:
                 type: string
+        "200":
+          description: "Visszaadja az option objektumot az adatbázisból, ha létezik."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OptionOutput'
     delete:
       tags:
       - option-controller
@@ -323,31 +323,22 @@ components:
         option:
           pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
           type: string
-    OptionOutput:
+    VoteOutput:
       required:
-      - description
-      - optionId
+      - option
       - poll
-      - price
-      - title
-      - votes
+      - username
+      - voteId
       type: object
       properties:
-        optionId:
+        voteId:
           type: string
-        title:
+        username:
           type: string
-        description:
-          type: string
-        price:
-          type: integer
-          format: int64
         poll:
           type: string
-        votes:
-          type: array
-          items:
-            type: string
+        option:
+          type: string
     PollInput:
       required:
       - description
@@ -431,19 +422,28 @@ components:
           items:
             pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
             type: string
-    VoteOutput:
+    OptionOutput:
       required:
-      - option
+      - description
+      - optionId
       - poll
-      - username
-      - voteId
+      - price
+      - title
+      - votes
       type: object
       properties:
-        voteId:
+        optionId:
           type: string
-        username:
+        title:
           type: string
+        description:
+          type: string
+        price:
+          type: integer
+          format: int64
         poll:
           type: string
-        option:
-          type: string
+        votes:
+          type: array
+          items:
+            type: string
