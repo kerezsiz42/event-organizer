@@ -5,9 +5,9 @@ import {
   inject,
   signal,
 } from "@angular/core";
-import { PollOutput } from "../api/models";
 import { PollControllerService } from "../api/services";
 import { DialogType } from "../app.component";
+import { StorageService } from "../storage.service";
 
 @Component({
   selector: "create-poll-form",
@@ -15,10 +15,10 @@ import { DialogType } from "../app.component";
   templateUrl: "./create-poll-form.component.html",
 })
 export class CreatePollFormComponent {
-  @Input() polls!: WritableSignal<PollOutput[]>;
-  @Input() dialog!: WritableSignal<DialogType>;
-
+  #storage = inject(StorageService);
   #pollProvider = inject(PollControllerService);
+
+  @Input() dialog!: WritableSignal<DialogType>;
 
   title = signal<string>("");
   onTitleChange(event: Event) {
@@ -43,11 +43,9 @@ export class CreatePollFormComponent {
       options: [],
       votes: [],
     };
-    this.#pollProvider.putPoll({ body }).subscribe((v) =>
-      this.polls.update((p) => {
-        this.dialog.set("");
-        return [...p, v];
-      })
-    );
+    this.#pollProvider.putPoll({ body }).subscribe((v) => {
+      this.#storage.polls.update((p) => [...p, v]);
+      this.dialog.set("");
+    });
   }
 }

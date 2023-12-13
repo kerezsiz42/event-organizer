@@ -1,15 +1,15 @@
 import {
   Component,
   Input,
+  OnInit,
   WritableSignal,
-  effect,
   inject,
-  signal,
 } from "@angular/core";
-import { OptionOutput, PollOutput } from "../api/models";
-import { OptionControllerService } from "../api/services";
 import { OptionItemComponent } from "../option-item/option-item.component";
 import { DialogType } from "../app.component";
+import { StorageService } from "../storage.service";
+import { PollOutput } from "../api/models";
+import { PollControllerService } from "../api/services";
 
 @Component({
   selector: "poll-item",
@@ -17,22 +17,29 @@ import { DialogType } from "../app.component";
   templateUrl: "./poll-item.component.html",
   imports: [OptionItemComponent],
 })
-export class PollItemComponent {
-  #optionProvider = inject(OptionControllerService);
-  #voteProvider = inject(OptionControllerService);
+export class PollItemComponent implements OnInit {
+  storage = inject(StorageService);
+  #pollProvider = inject(PollControllerService);
 
-  @Input() poll!: PollOutput;
   @Input() dialog!: WritableSignal<DialogType>;
+  @Input() poll!: PollOutput;
+  @Input() selectedPollId!: WritableSignal<string>;
 
-  options = signal<OptionOutput[]>([]);
+  onAddOption() {
+    this.selectedPollId.set(this.poll.pollId);
+    this.dialog.set("createOption");
+  }
 
-  constructor() {
-    effect(() => {
-      for (const id of this.poll.options) {
-        this.#optionProvider.getOption({ id }).subscribe((o) => {
-          this.options.update((os) => [...os, o]);
-        });
-      }
+  onDeletePoll() {
+    this.#pollProvider.deletePoll({ id: this.poll.pollId }).subscribe(() => {
+      this.storage.polls.update((ps) =>
+        ps.filter((p) => p.pollId !== this.poll.pollId)
+      );
+      this.storage.syncOptionsAndVotes(this.poll);
     });
+  }
+
+  ngOnInit() {
+    this.storage.syncOptionsAndVotes(this.poll);
   }
 }

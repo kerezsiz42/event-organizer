@@ -1,5 +1,5 @@
 <div
-  class="p-2 border-2 border-gray-300 rounded flex justify-between items-center"
+  class="p-2 border-2 border-gray-300 rounded flex justify-between items-center m-1"
 >
   <div class="flex flex-col">
     <span class="text-xl underline">{{ option.title }}</span>
@@ -9,10 +9,15 @@
     <button
       type="button"
       class="rounded bg-transparent text-blue-500 border-blue-500 p-2 m-1"
+      (click)="onSelectOption()"
     >
       Select
     </button>
-    <button type="button" class="rounded bg-red-500 text-white p-2 m-1">
+    <button
+      type="button"
+      class="rounded bg-red-500 text-white p-2 m-1"
+      (click)="onRemoveOption()"
+    >
       Remove
     </button>
   </div>

@@ -3,7 +3,7 @@
   <hr class="bg-gray-300 border-0 rounded h-1 mx-3" />
   <div class="p-2 flex justify-around items-center">
     <span class="text-center underline">Signed in as: {{ username() }}</span>
-    <span class="text-center underline">Your cost:</span>
+    <span class="text-center underline">Your cost: {{ cost() }}</span>
     <button
       type="button"
       class="rounded bg-blue-500 text-white p-2"
@@ -15,8 +15,12 @@
 </header>
 
 <main class="mx-auto max-w-2xl px-3">
-  @for (poll of polls(); track poll.pollId) {
-  <poll-item [poll]="poll" [dialog]="dialog"></poll-item>
+  @for (poll of storage.polls(); track poll.pollId) {
+  <poll-item
+    [dialog]="dialog"
+    [poll]="poll"
+    [selectedPollId]="selectedPollId"
+  ></poll-item>
   }
 </main>
 
@@ -27,8 +31,11 @@
     [checkIsSignedIn]="checkIsSignedIn"
   ></sign-in-form>
   } @case ("createPoll") {
-  <create-poll-form [polls]="polls" [dialog]="dialog"></create-poll-form>
+  <create-poll-form [dialog]="dialog"></create-poll-form>
   } @case ("createOption") {
-  <create-option-form></create-option-form>
+  <create-option-form
+    [dialog]="dialog"
+    [selectedPollId]="selectedPollId"
+  ></create-option-form>
   } }
 </custom-dialog>

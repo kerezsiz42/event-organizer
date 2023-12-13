@@ -8,4 +8,8 @@ import { OptionOutput } from "../api/models";
 })
 export class OptionItemComponent {
   @Input() option!: OptionOutput;
+
+  onSelectOption() {}
+
+  onRemoveOption() {}
 }

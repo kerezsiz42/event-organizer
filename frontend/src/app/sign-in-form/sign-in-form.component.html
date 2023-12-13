@@ -4,14 +4,15 @@
 <form class="m-2 flex flex-col" onsubmit="event.preventDefault()">
   <input
     type="text"
-    class="m-2 rounded border-2 border-gray-300 outline-none p-2"
+    class="rounded border-2 border-gray-300 outline-none p-2 m-1"
     autofocus
     [value]="username()"
     (input)="onUsernameChange($event)"
+    placeholder="Username"
   />
   <button
     type="button"
-    class="rounded border-2 border-gray-300 p-2"
+    class="rounded border-2 border-gray-300 p-2 m-1"
     (click)="signIn()"
   >
     Sign In
