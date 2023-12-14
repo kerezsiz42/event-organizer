@@ -25,30 +25,18 @@ export class StorageService {
   optionsByPollIds = signal<Record<string, OptionOutput[]>>({});
   votesByOptionIds = signal<Record<string, VoteOutput[]>>({});
 
-  syncPolls() {
-    this.#pollProvider.getPolls().subscribe((ps) => {
+  sync() {
+    return this.#pollProvider.getPolls().subscribe((ps) => {
       this.polls.set(ps);
       for (const p of ps) {
-        this.syncOptions(p);
+        for (const optionId of p.options) {
+          this.getOption(optionId);
+        }
+        for (const voteId of p.votes) {
+          this.getVote(voteId);
+        }
       }
     });
-  }
-
-  syncOptions(poll: PollOutput) {
-    for (const optionId of poll.options) {
-      this.#optionProvider.getOption({ id: optionId }).subscribe((o) => {
-        this.putOption(poll.pollId, o);
-        this.syncVotes(o);
-      });
-    }
-  }
-
-  syncVotes(option: OptionOutput) {
-    for (const voteId of option.votes) {
-      this.#voteProvider.getVote({ id: voteId }).subscribe((v) => {
-        this.putVote(option.optionId, v);
-      });
-    }
   }
 
   putPoll(poll: PollInput) {
@@ -61,23 +49,32 @@ export class StorageService {
     return this.#pollProvider.deletePoll({ id: poll.pollId }).subscribe(() => {
       for (const optionId of poll.options) {
         this.votesByOptionIds.update((vbo) => {
-          delete vbo[optionId];
-          return vbo;
+          const { [optionId]: _, ...rest } = vbo;
+          return rest;
         });
       }
       this.optionsByPollIds.update((obp) => {
-        delete obp[poll.pollId];
-        return obp;
+        const { [poll.pollId]: _, ...rest } = obp;
+        return rest;
       });
       this.polls.update((ps) => ps.filter((p) => p.pollId !== poll.pollId));
     });
   }
 
-  putOption(pollId: string, option: OptionInput) {
+  getOption(optionId: string) {
+    return this.#optionProvider.getOption({ id: optionId }).subscribe((o) => {
+      this.optionsByPollIds.update((obp) => ({
+        ...obp,
+        [o.poll]: [...(obp?.[o.poll] ?? []), o],
+      }));
+    });
+  }
+
+  putOption(option: OptionInput) {
     return this.#optionProvider.putOption({ body: option }).subscribe((o) => {
       this.optionsByPollIds.update((obp) => ({
         ...obp,
-        [pollId]: [...(obp?.[pollId] ?? []), o],
+        [option.poll]: [...(obp?.[option.poll] ?? []), o],
       }));
     });
   }
@@ -85,12 +82,21 @@ export class StorageService {
   deleteOption(optionId: string, pollId: string) {
     return this.#optionProvider.deleteOption({ id: optionId }).subscribe(() => {
       this.votesByOptionIds.update((vbo) => {
-        delete vbo[optionId];
-        return vbo;
+        const { [optionId]: _, ...rest } = vbo;
+        return rest;
       });
       this.optionsByPollIds.update((obp) => ({
         ...obp,
         [pollId]: obp[pollId].filter((o) => o.optionId !== optionId),
+      }));
+    });
+  }
+
+  getVote(voteId: string) {
+    return this.#voteProvider.getVote({ id: voteId }).subscribe((v) => {
+      this.votesByOptionIds.update((vbo) => ({
+        ...vbo,
+        [v.option]: [...(vbo?.[v.option] ?? []), v],
       }));
     });
   }

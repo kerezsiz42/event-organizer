@@ -15,7 +15,7 @@
 | GET | [/polls/{id}](#getpollsid) | Lekérdez egy poll objektumot id alapján |
 | PUT | [/votes](#putvotes) | Frissít vagy beilleszt egy vote objektumot az adatbázisba |
 | DELETE | [/votes/{id}](#deletevotesid) | Kitöröl egy vote objektumot id alapján idempotens módon |
-| GET | [/votes/{id}](#getvotesid) | Lekérdez egy poll objektumot id alapján |
+| GET | [/votes/{id}](#getvotesid) | Lekérdez egy vote objektumot id alapján |
 
 ## Reference Table
 
@@ -317,6 +317,7 @@ Frissít vagy beilleszt egy vote objektumot az adatbázisba
 ```ts
 {
   voteId: string
+  username: string
   poll: string
   option: string
 }
@@ -380,7 +381,7 @@ Kitöröl egy vote objektumot id alapján idempotens módon
 ### [GET]/votes/{id}
 
 - Summary  
-Lekérdez egy poll objektumot id alapján
+Lekérdez egy vote objektumot id alapján
 
 #### Responses
 
@@ -475,6 +476,7 @@ Lekérdez egy poll objektumot id alapján
 ```ts
 {
   voteId: string
+  username: string
   poll: string
   option: string
 }

@@ -14,6 +14,9 @@ public class VoteInput {
     private String voteId;
 
     @NotBlank(message = "mandatory field")
+    private String username;
+
+    @NotBlank(message = "mandatory field")
     @Pattern(regexp = Constants.UUID_REGEX, message = "invalid UUID format")
     private String poll;
 

@@ -60,7 +60,7 @@ export class VoteControllerService extends BaseService {
   static readonly GetVotePath = '/votes/{id}';
 
   /**
-   * Lekérdez egy poll objektumot id alapján.
+   * Lekérdez egy vote objektumot id alapján.
    *
    *
    *
@@ -74,7 +74,7 @@ export class VoteControllerService extends BaseService {
   }
 
   /**
-   * Lekérdez egy poll objektumot id alapján.
+   * Lekérdez egy vote objektumot id alapján.
    *
    *
    *

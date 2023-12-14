@@ -3,7 +3,6 @@ import { OptionItemComponent } from "../option-item/option-item.component";
 import { DialogType } from "../app.component";
 import { StorageService } from "../storage.service";
 import { PollOutput } from "../api/models";
-import { PollControllerService } from "../api/services";
 
 @Component({
   selector: "poll-item",
@@ -13,16 +12,18 @@ import { PollControllerService } from "../api/services";
 })
 export class PollItemComponent {
   storage = inject(StorageService);
-  #pollProvider = inject(PollControllerService);
 
   @Input() dialog!: WritableSignal<DialogType>;
   @Input() poll!: PollOutput;
   @Input() selectedPollId!: WritableSignal<string>;
+  @Input() username!: WritableSignal<string>;
 
   onAddOption() {
     this.selectedPollId.set(this.poll.pollId);
     this.dialog.set("createOption");
   }
 
-  onDeletePoll() {}
+  onDeletePoll() {
+    this.storage.deletePoll(this.poll);
+  }
 }

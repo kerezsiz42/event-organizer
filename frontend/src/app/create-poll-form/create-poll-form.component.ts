@@ -5,7 +5,6 @@ import {
   inject,
   signal,
 } from "@angular/core";
-import { PollControllerService } from "../api/services";
 import { DialogType } from "../app.component";
 import { StorageService } from "../storage.service";
 
@@ -16,7 +15,6 @@ import { StorageService } from "../storage.service";
 })
 export class CreatePollFormComponent {
   #storage = inject(StorageService);
-  #pollProvider = inject(PollControllerService);
 
   @Input() dialog!: WritableSignal<DialogType>;
 
@@ -35,17 +33,14 @@ export class CreatePollFormComponent {
   multipleResult = signal<boolean>(false);
 
   createPoll() {
-    const body = {
+    this.#storage.putPoll({
       pollId: crypto.randomUUID(),
       title: this.title(),
       description: this.description(),
       multipleResult: this.multipleResult(),
       options: [],
       votes: [],
-    };
-    this.#pollProvider.putPoll({ body }).subscribe((v) => {
-      this.#storage.polls.update((p) => [...p, v]);
-      this.dialog.set("");
     });
+    this.dialog.set("");
   }
 }

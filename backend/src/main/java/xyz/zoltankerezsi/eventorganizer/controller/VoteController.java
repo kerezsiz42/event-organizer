@@ -6,7 +6,6 @@ import org.hibernate.mapping.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +22,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
-import xyz.zoltankerezsi.eventorganizer.dto.OptionOutput;
 import xyz.zoltankerezsi.eventorganizer.dto.VoteInput;
 import xyz.zoltankerezsi.eventorganizer.dto.VoteOutput;
 import xyz.zoltankerezsi.eventorganizer.model.Option;
@@ -46,7 +44,7 @@ class VoteController {
         @Autowired
         private VoteRepository voteRepository;
 
-        @Operation(summary = "Lekérdez egy poll objektumot id alapján")
+        @Operation(summary = "Lekérdez egy vote objektumot id alapján")
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Visszaadja a vote objektumot az adatbázisból, ha létezik.", content = {
                                         @Content(schema = @Schema(implementation = VoteOutput.class)) }),
@@ -65,8 +63,7 @@ class VoteController {
                                         @Content(schema = @Schema(implementation = VoteOutput.class)) }),
                         @ApiResponse(responseCode = "400", description = "Működésbe lép, ha a vote objektum bármely mezője a validációnak nem megfelelő formátumú. Visszaküldi a hibás mezőket és a hibákat egy JSON objektumban.", content = @Content(schema = @Schema(implementation = Map.class))) })
         @PutMapping
-        ResponseEntity<VoteOutput> putVote(@Valid @RequestBody final VoteInput v,
-                        @CookieValue(name = "username", required = true) String username) {
+        ResponseEntity<VoteOutput> putVote(@Valid @RequestBody final VoteInput v) {
                 Optional<Poll> poll = pollRepository.findById(v.getPoll());
                 if (poll.isEmpty()) {
                         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -77,7 +74,7 @@ class VoteController {
                         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                                         String.format("% not found", v.getOption()));
                 }
-                Vote vote = new Vote(v.getVoteId(), username, poll.get(), option.get());
+                Vote vote = new Vote(v.getVoteId(), v.getUsername(), poll.get(), option.get());
                 voteRepository.save(vote);
                 return ResponseEntity.ok(VoteOutput.fromVote(vote));
         }

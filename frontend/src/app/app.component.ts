@@ -30,18 +30,19 @@ export class AppComponent implements OnInit {
   selectedPollId = signal<string>("");
 
   cost = computed(() => {
-    const votes = Object.values(this.storage.votesByOptionIds()).flat();
+    if (this.username() === "") {
+      return 0;
+    }
+    const votes = Object.values(this.storage.votesByOptionIds())
+      .flat()
+      .filter((v) => v.username === this.username());
+    const optionIds = votes.map(({ option }) => option);
     const options = Object.values(this.storage.optionsByPollIds()).flat();
-    return this.username() !== ""
-      ? votes
-          .filter((v) => v.username === this.username())
-          .reduce(
-            (acc, vote) =>
-              options.find((o) => o.votes.find((x) => x === vote.voteId))
-                ?.price ?? 0 + acc,
-            0
-          )
-      : 0;
+    return optionIds.reduce(
+      (acc, optionId) =>
+        (options.find((o) => o.optionId === optionId)?.price ?? 0) + acc,
+      0
+    );
   });
 
   checkIsSignedIn = () => {
@@ -56,7 +57,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.checkIsSignedIn();
-    this.storage.syncPolls();
+    this.storage.sync();
   }
 }
 

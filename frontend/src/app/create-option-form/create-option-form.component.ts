@@ -5,7 +5,6 @@ import {
   inject,
   signal,
 } from "@angular/core";
-import { OptionControllerService } from "../api/services";
 import { DialogType } from "../app.component";
 import { StorageService } from "../storage.service";
 
@@ -16,7 +15,6 @@ import { StorageService } from "../storage.service";
 })
 export class CreateOptionFormComponent {
   #storage = inject(StorageService);
-  #optionProvider = inject(OptionControllerService);
 
   @Input() dialog!: WritableSignal<DialogType>;
   @Input() selectedPollId!: WritableSignal<string>;
@@ -40,21 +38,15 @@ export class CreateOptionFormComponent {
   }
 
   createOption() {
-    const body = {
+    this.#storage.putOption({
       optionId: crypto.randomUUID(),
       title: this.title(),
       description: this.description(),
       price: this.price(),
       votes: [],
       poll: this.selectedPollId(),
-    };
-    this.#optionProvider.putOption({ body }).subscribe((o) => {
-      this.#storage.optionsByPollIds.update((obp) => ({
-        ...obp,
-        [this.selectedPollId()]: [...(obp?.[this.selectedPollId()] ?? []), o],
-      }));
-      this.dialog.set("");
-      this.selectedPollId.set("");
     });
+    this.dialog.set("");
+    this.selectedPollId.set("");
   }
 }

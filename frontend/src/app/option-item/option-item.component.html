@@ -7,21 +7,23 @@
     <span>Price: {{ option.price }}</span>
   </div>
   <div>
-    @if (false) {
-    <button
-      type="button"
-      class="rounded bg-white text-blue-500 border-blue-500 p-2 m-1"
-      (click)="onSelectOption()"
-    >
-      Select</button
-    >} @else {
+    @if (voteIfVoted() !== undefined) {
     <button
       type="button"
       class="rounded bg-blue-500 text-white p-2 m-1"
-      (click)="onSelectOption()"
+      (click)="onToggleVote()"
     >
-      Unselect</button
-    >}
+      Unselect
+    </button>
+    } @else {
+    <button
+      type="button"
+      class="rounded border bg-white text-blue-500 border-blue-500 p-2 m-1"
+      (click)="onToggleVote()"
+    >
+      Select
+    </button>
+    }
 
     <button
       type="button"

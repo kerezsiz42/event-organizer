@@ -23,6 +23,6 @@
   </div>
   @for(option of storage.optionsByPollIds()[poll.pollId]; track option.optionId)
   {
-  <option-item [option]="option"></option-item>
+  <option-item [option]="option" [username]="username"></option-item>
   }
 </div>
