@@ -42,10 +42,13 @@ export class StorageService {
     this.polls().reduce((acc, poll) => {
       return {
         ...acc,
-        [poll.pollId]: poll.options.reduce((a, optionId) => {
-          const voteCount = this.voteCountByOptionId()[optionId];
-          return a > voteCount ? a : voteCount;
-        }, 0),
+        [poll.pollId]: this.optionsByPollIds()[poll.pollId].reduce(
+          (a, { optionId }) => {
+            const voteCount = this.voteCountByOptionId()[optionId];
+            return a > voteCount ? a : voteCount;
+          },
+          0
+        ),
       };
     }, {})
   );
@@ -73,43 +76,40 @@ export class StorageService {
   deletePoll(poll: PollOutput) {
     return this.#pollProvider.deletePoll({ id: poll.pollId }).subscribe(() => {
       for (const optionId of poll.options) {
-        this.votesByOptionIds.update((vbo) => {
-          const { [optionId]: _, ...rest } = vbo;
-          return rest;
-        });
+        this.votesByOptionIds.update(this.#omit(optionId));
       }
-      this.optionsByPollIds.update((obp) => {
-        const { [poll.pollId]: _, ...rest } = obp;
-        return rest;
-      });
+      this.optionsByPollIds.update(this.#omit(poll.pollId));
       this.polls.update((ps) => ps.filter((p) => p.pollId !== poll.pollId));
     });
   }
 
+  #omit = (k: string) => (r: { [key: string]: any }) => {
+    const { [k]: _, ...rest } = r;
+    return rest;
+  };
+
   getOption(optionId: string) {
     return this.#optionProvider.getOption({ id: optionId }).subscribe((o) => {
-      this.optionsByPollIds.update((obp) => ({
-        ...obp,
-        [o.poll]: [...(obp?.[o.poll] ?? []), o],
-      }));
+      this.#addOption(o);
     });
   }
 
   putOption(option: OptionInput) {
     return this.#optionProvider.putOption({ body: option }).subscribe((o) => {
-      this.optionsByPollIds.update((obp) => ({
-        ...obp,
-        [option.poll]: [...(obp?.[option.poll] ?? []), o],
-      }));
+      this.#addOption(o);
     });
+  }
+
+  #addOption(o: OptionOutput) {
+    this.optionsByPollIds.update((obp) => ({
+      ...obp,
+      [o.poll]: [...(obp?.[o.poll] ?? []), o],
+    }));
   }
 
   deleteOption(optionId: string, pollId: string) {
     return this.#optionProvider.deleteOption({ id: optionId }).subscribe(() => {
-      this.votesByOptionIds.update((vbo) => {
-        const { [optionId]: _, ...rest } = vbo;
-        return rest;
-      });
+      this.votesByOptionIds.update(this.#omit(optionId));
       this.optionsByPollIds.update((obp) => ({
         ...obp,
         [pollId]: obp[pollId].filter((o) => o.optionId !== optionId),
@@ -119,19 +119,13 @@ export class StorageService {
 
   getVote(voteId: string) {
     return this.#voteProvider.getVote({ id: voteId }).subscribe((v) => {
-      this.votesByOptionIds.update((vbo) => ({
-        ...vbo,
-        [v.option]: [...(vbo?.[v.option] ?? []), v],
-      }));
+      this.#addVote(v, v.option);
     });
   }
 
   putVote(optionId: string, vote: VoteInput) {
     return this.#voteProvider.putVote({ body: vote }).subscribe((v) => {
-      this.votesByOptionIds.update((vbo) => ({
-        ...vbo,
-        [optionId]: [...(vbo?.[optionId] ?? []), v],
-      }));
+      this.#addVote(v, optionId);
     });
   }
 
@@ -142,5 +136,12 @@ export class StorageService {
         [optionId]: vbo[optionId].filter((o) => o.voteId !== voteId),
       }));
     });
+  }
+
+  #addVote(v: VoteOutput, optionId: string) {
+    this.votesByOptionIds.update((vbo) => ({
+      ...vbo,
+      [optionId]: [...(vbo?.[optionId] ?? []), v],
+    }));
   }
 }

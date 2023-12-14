@@ -20,7 +20,7 @@
   <button
     type="button"
     class="rounded bg-gray-500 text-white p-2 m-2"
-    (click)="multipleResult.set(!multipleResult())"
+    (click)="toggleMultipleResult()"
   >
     {{ multipleResult() ? "Multiple Result" : "Single Result" }}
   </button>

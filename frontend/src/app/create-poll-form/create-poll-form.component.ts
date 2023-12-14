@@ -31,6 +31,9 @@ export class CreatePollFormComponent {
   }
 
   multipleResult = signal<boolean>(false);
+  toggleMultipleResult() {
+    this.multipleResult.update((v) => !v);
+  }
 
   createPoll() {
     this.#storage.putPoll({

@@ -3,6 +3,7 @@ import {
   Input,
   WritableSignal,
   computed,
+  effect,
   inject,
 } from "@angular/core";
 import { OptionOutput } from "../api/models";
@@ -28,6 +29,10 @@ export class OptionItemComponent {
     );
   });
 
+  constructor() {
+    effect(() => console.log(this.isWinning()));
+  }
+
   votes = computed(
     () => this.#storage.votesByOptionIds()[this.option.optionId] ?? []
   );
@@ -39,7 +44,7 @@ export class OptionItemComponent {
       .join(", ")
   );
 
-  voteIfVoted = computed(() => {
+  getVoteIfVoted = computed(() => {
     if (this.username() === "") {
       return undefined;
     }
@@ -47,17 +52,17 @@ export class OptionItemComponent {
   });
 
   onToggleVote() {
-    const vote = this.voteIfVoted();
+    const vote = this.getVoteIfVoted();
     if (vote) {
       this.#storage.deleteVote(vote.voteId, this.option.optionId);
     } else {
-      const vote = {
+      const newVote = {
         voteId: crypto.randomUUID(),
         option: this.option.optionId,
         poll: this.option.poll,
         username: this.username(),
       };
-      this.#storage.putVote(this.option.optionId, vote);
+      this.#storage.putVote(this.option.optionId, newVote);
     }
   }
 

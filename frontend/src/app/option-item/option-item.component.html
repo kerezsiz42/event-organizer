@@ -12,7 +12,7 @@
   <div class="flex flex-col">
     @if(!isMultipleResult && isWinning()) {
     <span class="text-green-500 font-bold text-center">Winning Option</span>
-    } @if (voteIfVoted() !== undefined) {
+    } @if (getVoteIfVoted() !== undefined) {
     <button
       type="button"
       class="rounded bg-blue-500 text-white p-2 m-1"
