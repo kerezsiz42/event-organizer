@@ -3,7 +3,8 @@
   <hr class="bg-gray-300 border-0 rounded h-1 mx-3" />
   <div class="p-2 flex justify-around items-center">
     <span class="text-center underline">Signed in as: {{ username() }}</span>
-    <span class="text-center underline">Your cost: {{ cost() }}</span>
+    <span class="text-center underline">Your cost: {{ userCost() }}</span>
+    <span class="text-center underline">Total cost: {{ totalCost() }}</span>
     <button
       type="button"
       class="rounded bg-blue-500 text-white p-2"

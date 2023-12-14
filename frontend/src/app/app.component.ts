@@ -29,21 +29,31 @@ export class AppComponent implements OnInit {
   username = signal<string>("");
   selectedPollId = signal<string>("");
 
-  cost = computed(() => {
-    if (this.username() === "") {
-      return 0;
-    }
-    const votes = Object.values(this.storage.votesByOptionIds())
-      .flat()
-      .filter((v) => v.username === this.username());
-    const optionIds = votes.map(({ option }) => option);
-    const options = Object.values(this.storage.optionsByPollIds()).flat();
-    return optionIds.reduce(
-      (acc, optionId) =>
-        (options.find((o) => o.optionId === optionId)?.price ?? 0) + acc,
+  userVotes = computed(() =>
+    this.username() !== ""
+      ? this.storage.allVotes().filter((v) => v.username === this.username())
+      : []
+  );
+
+  userCost = computed(() =>
+    this.userVotes().reduce(
+      (acc, { option }) =>
+        (this.storage.allOptions().find((o) => o.optionId === option)?.price ??
+          0) + acc,
       0
-    );
-  });
+    )
+  );
+
+  totalCost = computed(() =>
+    this.storage
+      .allVotes()
+      .reduce(
+        (acc, { option }) =>
+          (this.storage.allOptions().find((o) => o.optionId === option)
+            ?.price ?? 0) + acc,
+        0
+      )
+  );
 
   checkIsSignedIn = () => {
     const match = document.cookie.match(/username=(?<username>.*)/);

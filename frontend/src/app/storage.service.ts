@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from "@angular/core";
+import { Injectable, computed, inject, signal } from "@angular/core";
 import {
   OptionInput,
   OptionOutput,
@@ -24,6 +24,31 @@ export class StorageService {
   polls = signal<PollOutput[]>([]);
   optionsByPollIds = signal<Record<string, OptionOutput[]>>({});
   votesByOptionIds = signal<Record<string, VoteOutput[]>>({});
+
+  allVotes = computed(() => Object.values(this.votesByOptionIds()).flat());
+  allOptions = computed(() => Object.values(this.optionsByPollIds()).flat());
+
+  voteCountByOptionId = computed<Record<string, number>>(() =>
+    this.allOptions().reduce(
+      (acc, { optionId }) => ({
+        ...acc,
+        [optionId]: this.votesByOptionIds()[optionId]?.length ?? 0,
+      }),
+      {}
+    )
+  );
+
+  maxVoteCountsByPollId = computed<Record<string, number>>(() =>
+    this.polls().reduce((acc, poll) => {
+      return {
+        ...acc,
+        [poll.pollId]: poll.options.reduce((a, optionId) => {
+          const voteCount = this.voteCountByOptionId()[optionId];
+          return a > voteCount ? a : voteCount;
+        }, 0),
+      };
+    }, {})
+  );
 
   sync() {
     return this.#pollProvider.getPolls().subscribe((ps) => {
