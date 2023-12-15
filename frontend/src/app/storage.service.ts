@@ -42,9 +42,9 @@ export class StorageService {
     this.polls().reduce((acc, poll) => {
       return {
         ...acc,
-        [poll.pollId]: this.optionsByPollIds()[poll.pollId].reduce(
+        [poll.pollId]: (this.optionsByPollIds()[poll.pollId] ?? []).reduce(
           (a, { optionId }) => {
-            const voteCount = this.voteCountByOptionId()[optionId];
+            const voteCount = this.voteCountByOptionId()[optionId] ?? 0;
             return a > voteCount ? a : voteCount;
           },
           0

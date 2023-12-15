@@ -76,10 +76,8 @@ class PollController {
 			@ApiResponse(responseCode = "400", description = "Működésbe lép, ha a poll objektum bármely mezője a validációnak nem megfelelő formátumú. Visszaküldi a hibás mezőket és a hibákat egy JSON objektumban.", content = @Content(schema = @Schema(implementation = Map.class))) })
 	@PutMapping
 	ResponseEntity<PollOutput> putPoll(@Valid @RequestBody final PollInput p) {
-		List<Option> options = new ArrayList<>();
-		optionRepository.findAllById(p.getOptions()).forEach(options::add);
-		List<Vote> votes = new ArrayList<>();
-		voteRepository.findAllById(p.getVotes()).forEach(votes::add);
+		List<Option> options = optionRepository.findAllById(p.getOptions());
+		List<Vote> votes = voteRepository.findAllById(p.getVotes());
 		Poll poll = new Poll(p.getPollId(), p.getTitle(), p.getDescription(), p.getMultipleResult(),
 				options, votes);
 		pollRepository.save(poll);
